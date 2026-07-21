@@ -1141,7 +1141,7 @@ async function handleSlotClick(index, isActive) {
     } else {
         // 빈칸 클릭 시: 편집자만 스티커 선택 & 메모 작성 모달 노출
         if (!isEditorMode) {
-            showToast("스티커 추가는 여자친구(편집자)만 가능해요! 🧸");
+            showToast("스티커 추가는 남자친구(관리자)만 가능해요! 🐾");
             return;
         }
         memoTargetIndex = index;
@@ -1160,7 +1160,7 @@ async function handleSlotLongPress(index, isActive) {
     if (!isActive) return; // 빈칸은 롱프레스 무시
 
     if (!isEditorMode) {
-        showToast("스티커 제거는 남자친구(편집자)만 가능해요! 🐾");
+        showToast("스티커 제거는 남자친구(관리자)만 가능해요! 🐾");
         return;
     }
 
@@ -1358,8 +1358,8 @@ btnSettingsSave.addEventListener("click", async () => {
     const updated = {
         ...currentBoard,
         editor_pin: newPin || (currentBoard && currentBoard.editor_pin) || "1234",
-        reader_role_name: newReaderName || (currentBoard && currentBoard.reader_role_name) || "남자친구 모드 (조회 전용)",
-        editor_role_name: newEditorName || (currentBoard && currentBoard.editor_role_name) || "여자친구 모드 (부착 가능)"
+        reader_role_name: newReaderName || (currentBoard && currentBoard.reader_role_name) || "여자친구 모드 (조회 전용)",
+        editor_role_name: newEditorName || (currentBoard && currentBoard.editor_role_name) || "남자친구 모드 (부착 가능)"
     };
 
     const success = await apiCreateBoard(updated);
