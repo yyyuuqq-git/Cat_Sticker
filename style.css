@@ -1,24 +1,24 @@
 /* ==========================================
-   스티치 테마 칭찬나라 전역 CSS 디자인 시스템
+   고양이 테마 칭찬나라 전역 CSS 디자인 시스템
    ========================================== */
 
 /* 1. 디자인 토큰 및 변수 */
 :root {
-    --stitch-primary: #4A5568; /* slate blue-gray */
-    --stitch-primary-dark: #2D3748; /* charcoal */
-    --stitch-light-sky: #E2E8F0;
-    --stitch-pink: #F87171; /* soft pink */
-    --stitch-dark: #1A202C;
-    --stitch-bg-light: #FAF6F0; /* cozy cream */
+    --stitch-primary: #EC4899; /* lovely pink */
+    --stitch-primary-dark: #BE185D; /* deep pink */
+    --stitch-light-sky: #FCE7F3; /* soft pink pastel */
+    --stitch-pink: #F472B6; /* bright pink */
+    --stitch-dark: #831843; /* rich rose dark */
+    --stitch-bg-light: #FFF5F7; /* warm cozy pink cream */
     --stitch-card-bg: #FFFFFF;
     
     --accent-yellow: #F59E0B; /* warm gold */
-    --soft-pink: #FEF2F2;
-    --soft-blue: #EDF2F7;
+    --soft-pink: #FDF2F8;
+    --soft-blue: #FCE7F3;
     
-    --text-primary: #2D3748;
-    --text-muted: #718096;
-    --border-color: #CBD5E0;
+    --text-primary: #4C0519;
+    --text-muted: #9D4C6C;
+    --border-color: #FBCFE8;
     
     --font-app: 'Nunito', 'Jua', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
@@ -33,7 +33,7 @@
 
 body {
     font-family: var(--font-app);
-    background-color: #E2DCD5; /* cozy warm background */
+    background: linear-gradient(135deg, #FCE7F3 0%, #FBCFE8 50%, #F472B6 100%); /* soft pink gradient */
     color: var(--text-primary);
     display: flex;
     justify-content: center;

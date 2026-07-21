@@ -365,20 +365,21 @@ async function apiRemoveSticker(boardId, index) {
 }
 
 // ==========================================
-// 5. 3D 입체 해양생물 에폭시 스티커 10종 빌더
+// 5. 귀여운 고양이 발바닥(젤리 🐾) 스티커 10종 빌더
 // ==========================================
-const SEA_CREATURES = [
-    { id: 0, name: "핑크 문어", emoji: "🐙" },
-    { id: 1, name: "아쿠아 돌고래", emoji: "🐬" },
-    { id: 2, name: "버블 물범", emoji: "🦭" },
-    { id: 3, name: "코랄 게", emoji: "🦀" },
-    { id: 4, name: "진주 조개", emoji: "🐚" },
-    { id: 5, name: "동글 펭귄", emoji: "🐧" },
-    { id: 6, name: "별빛 외뿔고래", emoji: "🐋" },
-    { id: 7, name: "투명 오징어", emoji: "🦑" },
-    { id: 8, name: "반짝 별님", emoji: "⭐" },
-    { id: 9, name: "바다 수달", emoji: "🦦" }
+const CAT_PAWS = [
+    { id: 0, name: "딸기 핑크 젤리 🍓", emoji: "🐾" },
+    { id: 1, name: "밀크 핑크 젤리 🥛", emoji: "🐾" },
+    { id: 2, name: "체리 블라섬 젤리 🌸", emoji: "🐾" },
+    { id: 3, name: "치즈 냥이 젤리 🧀", emoji: "🐾" },
+    { id: 4, name: "삼색이 냥이 젤리 🐱", emoji: "🐾" },
+    { id: 5, name: "흑임자 핑크 젤리 🖤", emoji: "🐾" },
+    { id: 6, name: "사쿠라 젤리 🌺", emoji: "🐾" },
+    { id: 7, name: "꿀단지 젤리 🍯", emoji: "🐾" },
+    { id: 8, name: "초코 핑크 젤리 🍫", emoji: "🐾" },
+    { id: 9, name: "무지개 젤리 🌈", emoji: "🐾" }
 ];
+const SEA_CREATURES = CAT_PAWS; // 호환성 유지
 
 let selectedStickerType = 0;
 
@@ -391,220 +392,203 @@ function parseStickerMemo(rawMemo) {
     return { type: null, memo: rawMemo };
 }
 
-function getSeaCreatureGraphic(type) {
+function getCatPawGraphic(type) {
     switch (type) {
-        case 0: // 🐙 핑크 젤리 문어
+        case 0: // 🍓 딸기 핑크 젤리
             return `
                 <defs>
-                    <linearGradient id="pink-head-${type}" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FF99DD" />
-                        <stop offset="60%" stop-color="#FF4DB8" />
-                        <stop offset="100%" stop-color="#E6007A" />
+                    <linearGradient id="paw-bg-0" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FFF0F5" />
+                        <stop offset="100%" stop-color="#FCE7F3" />
                     </linearGradient>
-                </defs>
-                <circle cx="28" cy="72" r="9" fill="url(#pink-head-${type})" />
-                <circle cx="43" cy="76" r="9" fill="url(#pink-head-${type})" />
-                <circle cx="57" cy="76" r="9" fill="url(#pink-head-${type})" />
-                <circle cx="72" cy="72" r="9" fill="url(#pink-head-${type})" />
-                <ellipse cx="50" cy="46" rx="28" ry="24" fill="url(#pink-head-${type})" />
-                <circle cx="40" cy="48" r="3.5" fill="#1E293B" />
-                <circle cx="60" cy="48" r="3.5" fill="#1E293B" />
-                <circle cx="41" cy="46" r="1.2" fill="#FFFFFF" />
-                <circle cx="61" cy="46" r="1.2" fill="#FFFFFF" />
-                <ellipse cx="33" cy="53" rx="4" ry="2.5" fill="#FF1A8C" opacity="0.6" />
-                <ellipse cx="67" cy="53" rx="4" ry="2.5" fill="#FF1A8C" opacity="0.6" />
-                <path d="M 47 54 Q 50 57 53 54" stroke="#1E293B" stroke-width="2" fill="none" stroke-linecap="round" />
-                <path d="M 30 30 A 20 15 0 0 1 70 30 C 58 24 42 24 30 30 Z" fill="#FFFFFF" opacity="0.7" />
-                <circle cx="34" cy="28" r="3" fill="#FFFFFF" opacity="0.8" />
-            `;
-        case 1: // 🐬 아쿠아 돌고래
-            return `
-                <defs>
-                    <linearGradient id="aqua-dolphin-${type}" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#70E4EF" />
-                        <stop offset="50%" stop-color="#00C4FF" />
-                        <stop offset="100%" stop-color="#0077FF" />
-                    </linearGradient>
-                </defs>
-                <path d="M 76 68 C 84 64 90 70 88 78 C 80 74 74 72 70 70 Z" fill="url(#aqua-dolphin-${type})" />
-                <path d="M 16 52 C 22 32 46 24 72 44 C 80 50 84 62 72 70 C 52 78 30 72 16 52 Z" fill="url(#aqua-dolphin-${type})" />
-                <path d="M 44 28 C 48 18 56 16 58 26 Z" fill="url(#aqua-dolphin-${type})" />
-                <path d="M 24 56 C 36 68 56 70 66 62 C 48 64 34 60 24 56 Z" fill="#E0F7FA" opacity="0.75" />
-                <circle cx="30" cy="46" r="3" fill="#0F172A" />
-                <circle cx="31" cy="44.8" r="1" fill="#FFFFFF" />
-                <path d="M 22 52 Q 26 55 28 51" stroke="#0F172A" stroke-width="1.8" fill="none" stroke-linecap="round" />
-                <path d="M 32 34 C 44 28 60 32 66 40 C 52 32 38 32 32 34 Z" fill="#FFFFFF" opacity="0.7" />
-            `;
-        case 2: // 🦭 버블 하프물범
-            return `
-                <defs>
-                    <radialGradient id="bubble-sphere-${type}" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#E0F2FE" stop-opacity="0.95" />
-                        <stop offset="60%" stop-color="#38BDF8" stop-opacity="0.65" />
-                        <stop offset="100%" stop-color="#0284C7" stop-opacity="0.9" />
-                    </radialGradient>
-                    <linearGradient id="seal-body-${type}" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stop-color="#FFFFFF" />
-                        <stop offset="100%" stop-color="#E2E8F0" />
-                    </linearGradient>
-                </defs>
-                <circle cx="50" cy="50" r="38" fill="url(#bubble-sphere-${type})" />
-                <ellipse cx="50" cy="54" rx="24" ry="19" fill="url(#seal-body-${type})" />
-                <ellipse cx="30" cy="62" rx="6" ry="4" fill="url(#seal-body-${type})" transform="rotate(-20 30 62)" />
-                <ellipse cx="70" cy="62" rx="6" ry="4" fill="url(#seal-body-${type})" transform="rotate(20 70 62)" />
-                <circle cx="42" cy="50" r="3" fill="#1E293B" />
-                <circle cx="58" cy="50" r="3" fill="#1E293B" />
-                <ellipse cx="50" cy="55" rx="3.5" ry="2.5" fill="#475569" />
-                <ellipse cx="36" cy="54" rx="3.5" ry="2" fill="#FDA4AF" opacity="0.7" />
-                <ellipse cx="64" cy="54" rx="3.5" ry="2" fill="#FDA4AF" opacity="0.7" />
-                <path d="M 24 28 A 30 30 0 0 1 76 28 C 60 20 40 20 24 28 Z" fill="#FFFFFF" opacity="0.8" />
-                <circle cx="72" cy="70" r="3" fill="#FFFFFF" opacity="0.6" />
-            `;
-        case 3: // 🦀 코랄 핑크 게
-            return `
-                <defs>
-                    <linearGradient id="coral-crab-${type}" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FF8A9E" />
-                        <stop offset="100%" stop-color="#FF3B60" />
-                    </linearGradient>
-                </defs>
-                <path d="M 22 36 C 12 24 16 12 28 20 C 32 26 26 34 22 36 Z" fill="url(#coral-crab-${type})" />
-                <path d="M 78 36 C 88 24 84 12 72 20 C 68 26 74 34 78 36 Z" fill="url(#coral-crab-${type})" />
-                <path d="M 24 54 Q 14 62 20 72 M 76 54 Q 86 62 80 72" stroke="#FF3B60" stroke-width="4" stroke-linecap="round" fill="none" />
-                <ellipse cx="50" cy="52" rx="28" ry="20" fill="url(#coral-crab-${type})" />
-                <circle cx="40" cy="46" r="3.5" fill="#1E293B" />
-                <circle cx="60" cy="46" r="3.5" fill="#1E293B" />
-                <circle cx="41" cy="44.5" r="1.2" fill="#FFFFFF" />
-                <circle cx="61" cy="44.5" r="1.2" fill="#FFFFFF" />
-                <ellipse cx="33" cy="52" rx="3.5" ry="2" fill="#FF1A40" opacity="0.6" />
-                <ellipse cx="67" cy="52" rx="3.5" ry="2" fill="#FF1A40" opacity="0.6" />
-                <path d="M 47 54 Q 50 57 53 54" stroke="#1E293B" stroke-width="1.8" stroke-linecap="round" fill="none" />
-                <path d="M 30 38 A 20 12 0 0 1 70 38 C 56 32 44 32 30 38 Z" fill="#FFFFFF" opacity="0.7" />
-            `;
-        case 4: // 🐚 진주 가리비
-            return `
-                <defs>
-                    <linearGradient id="purple-shell-${type}" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#E9D5FF" />
-                        <stop offset="50%" stop-color="#C084FC" />
-                        <stop offset="100%" stop-color="#9333EA" />
-                    </linearGradient>
-                    <radialGradient id="pearl-shine-${type}" cx="30%" cy="30%" r="70%">
-                        <stop offset="0%" stop-color="#FFFFFF" />
-                        <stop offset="50%" stop-color="#F1F5F9" />
-                        <stop offset="100%" stop-color="#CBD5E1" />
+                    <radialGradient id="pad-pink-0" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FFB6C1" />
+                        <stop offset="60%" stop-color="#F472B6" />
+                        <stop offset="100%" stop-color="#EC4899" />
                     </radialGradient>
                 </defs>
-                <path d="M 20 60 C 14 36 34 20 50 20 C 66 20 86 36 80 60 C 74 76 26 76 20 60 Z" fill="url(#purple-shell-${type})" />
-                <path d="M 50 20 L 50 72 M 36 24 L 38 70 M 64 24 L 62 70 M 26 34 L 30 66 M 74 34 L 70 66" stroke="#F3E8FF" stroke-width="1.5" opacity="0.6" fill="none" />
-                <path d="M 38 70 L 62 70 L 58 78 L 42 78 Z" fill="#7E22CE" />
-                <circle cx="50" cy="56" r="11" fill="url(#pearl-shine-${type})" />
-                <circle cx="46" cy="52" r="3.5" fill="#FFFFFF" opacity="0.9" />
-                <path d="M 30 28 C 42 22 58 22 70 28 C 58 24 42 24 30 28 Z" fill="#FFFFFF" opacity="0.75" />
+                <circle cx="50" cy="50" r="44" fill="url(#paw-bg-0)" stroke="#FBCFE8" stroke-width="2.5" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-0)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-0)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-0)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-0)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-0)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.65" transform="rotate(-15 46 52)" />
+                <circle cx="40" cy="24" r="2" fill="#FFFFFF" opacity="0.6" />
             `;
-        case 5: // 🐧 동글 펭귄
+        case 1: // 🥛 밀크 핑크 젤리
             return `
                 <defs>
-                    <linearGradient id="penguin-dark-${type}" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#334155" />
-                        <stop offset="100%" stop-color="#0F172A" />
+                    <linearGradient id="paw-bg-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FFFFFF" />
+                        <stop offset="100%" stop-color="#FFF0F5" />
                     </linearGradient>
-                </defs>
-                <ellipse cx="50" cy="50" rx="28" ry="32" fill="url(#penguin-dark-${type})" />
-                <ellipse cx="50" cy="56" rx="20" ry="22" fill="#FFFFFF" />
-                <ellipse cx="20" cy="52" rx="5" ry="14" fill="url(#penguin-dark-${type})" transform="rotate(15 20 52)" />
-                <ellipse cx="80" cy="52" rx="5" ry="14" fill="url(#penguin-dark-${type})" transform="rotate(-15 80 52)" />
-                <ellipse cx="44" cy="80" rx="5" ry="3" fill="#F59E0B" />
-                <ellipse cx="56" cy="80" rx="5" ry="3" fill="#F59E0B" />
-                <polygon points="50,46 45,51 55,51" fill="#F59E0B" />
-                <circle cx="40" cy="42" r="3" fill="#0F172A" />
-                <circle cx="60" cy="42" r="3" fill="#0F172A" />
-                <circle cx="41" cy="41" r="1" fill="#FFFFFF" />
-                <circle cx="61" cy="41" r="1" fill="#FFFFFF" />
-                <ellipse cx="34" cy="46" rx="3.5" ry="2" fill="#FDA4AF" opacity="0.7" />
-                <ellipse cx="66" cy="46" rx="3.5" ry="2" fill="#FDA4AF" opacity="0.7" />
-                <path d="M 30 26 C 42 20 58 20 70 26 C 58 22 42 22 30 26 Z" fill="#FFFFFF" opacity="0.75" />
-            `;
-        case 6: // 🐋 별빛 외뿔고래
-            return `
-                <defs>
-                    <linearGradient id="narwhal-body-${type}" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#C084FC" />
-                        <stop offset="50%" stop-color="#818CF8" />
-                        <stop offset="100%" stop-color="#38BDF8" />
-                    </linearGradient>
-                </defs>
-                <polygon points="34,36 14,14 38,30" fill="#FBBF24" />
-                <path d="M 24 25 L 28 27" stroke="#F59E0B" stroke-width="1.5" />
-                <ellipse cx="54" cy="54" rx="28" ry="20" fill="url(#narwhal-body-${type})" />
-                <path d="M 78 54 C 88 48 92 54 90 62 C 84 58 80 58 76 56 Z" fill="url(#narwhal-body-${type})" />
-                <path d="M 34 58 C 44 68 64 68 74 58 C 62 64 46 64 34 58 Z" fill="#F0F9FF" opacity="0.8" />
-                <circle cx="40" cy="50" r="3" fill="#1E293B" />
-                <circle cx="41" cy="48.8" r="1" fill="#FFFFFF" />
-                <ellipse cx="46" cy="54" rx="3" ry="2" fill="#F472B6" opacity="0.7" />
-                <path d="M 24 45 L 26 42 L 28 45 L 26 48 Z" fill="#FDE047" />
-                <path d="M 36 40 C 48 36 64 38 72 44 C 60 38 46 38 36 40 Z" fill="#FFFFFF" opacity="0.75" />
-            `;
-        case 7: // 🦑 투명 오징어
-            return `
-                <defs>
-                    <linearGradient id="squid-body-${type}" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#EEF2FF" />
-                        <stop offset="50%" stop-color="#F472B6" />
-                        <stop offset="100%" stop-color="#DB2777" />
-                    </linearGradient>
-                </defs>
-                <path d="M 36 62 Q 32 78 36 84 M 44 64 Q 42 80 46 86 M 56 64 Q 58 80 54 86 M 64 62 Q 68 78 64 84" stroke="#EC4899" stroke-width="4" stroke-linecap="round" fill="none" />
-                <path d="M 50 18 C 30 18 26 42 30 62 C 40 66 60 66 70 62 C 74 42 70 18 50 18 Z" fill="url(#squid-body-${type})" />
-                <circle cx="42" cy="46" r="3" fill="#1E293B" />
-                <circle cx="58" cy="46" r="3" fill="#1E293B" />
-                <ellipse cx="36" cy="50" rx="3" ry="2" fill="#BE185D" opacity="0.6" />
-                <ellipse cx="64" cy="50" rx="3" ry="2" fill="#BE185D" opacity="0.6" />
-                <path d="M 38 26 C 46 22 54 22 62 26 C 54 23 46 23 38 26 Z" fill="#FFFFFF" opacity="0.8" />
-            `;
-        case 8: // ⭐ 반짝 별님
-            return `
-                <defs>
-                    <linearGradient id="star-jelly-${type}" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FDE047" />
-                        <stop offset="50%" stop-color="#F59E0B" />
+                    <radialGradient id="pad-pink-1" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FFD1DC" />
+                        <stop offset="70%" stop-color="#FF8DA1" />
                         <stop offset="100%" stop-color="#F43F5E" />
-                    </linearGradient>
+                    </radialGradient>
                 </defs>
-                <path d="M 50 14 C 54 28 60 34 76 36 C 62 46 60 54 66 72 C 52 62 48 62 34 72 C 40 54 38 46 24 36 C 40 34 46 28 50 14 Z" fill="url(#star-jelly-${type})" />
-                <circle cx="44" cy="44" r="3" fill="#1E293B" />
-                <circle cx="56" cy="44" r="3" fill="#1E293B" />
-                <ellipse cx="38" cy="48" rx="3" ry="2" fill="#E11D48" opacity="0.6" />
-                <ellipse cx="62" cy="48" rx="3" ry="2" fill="#E11D48" opacity="0.6" />
-                <path d="M 47 50 Q 50 53 53 50" stroke="#1E293B" stroke-width="1.8" stroke-linecap="round" fill="none" />
-                <path d="M 46 20 C 48 30 52 34 60 36 C 54 32 50 30 46 20 Z" fill="#FFFFFF" opacity="0.8" />
+                <circle cx="50" cy="50" r="44" fill="url(#paw-bg-1)" stroke="#FFD1DC" stroke-width="2.5" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-1)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-1)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-1)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-1)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-1)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.7" transform="rotate(-15 46 52)" />
             `;
-        case 9: // 🦦 바다 수달
+        case 2: // 🌸 체리 블라섬 젤리
             return `
                 <defs>
-                    <linearGradient id="otter-brown-${type}" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#D97706" />
-                        <stop offset="100%" stop-color="#78350F" />
-                    </linearGradient>
+                    <radialGradient id="pad-pink-2" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FF90B3" />
+                        <stop offset="70%" stop-color="#E11D48" />
+                        <stop offset="100%" stop-color="#9F1239" />
+                    </radialGradient>
                 </defs>
-                <circle cx="28" cy="30" r="6" fill="url(#otter-brown-${type})" />
-                <circle cx="72" cy="30" r="6" fill="url(#otter-brown-${type})" />
-                <ellipse cx="50" cy="50" rx="26" ry="28" fill="url(#otter-brown-${type})" />
-                <ellipse cx="50" cy="48" rx="12" ry="9" fill="#FEF3C7" />
-                <circle cx="36" cy="62" r="5" fill="#B45309" />
-                <circle cx="64" cy="62" r="5" fill="#B45309" />
-                <ellipse cx="50" cy="64" rx="9" ry="7" fill="#FBBF24" />
-                <path d="M 50 58 L 50 70 M 45 60 L 47 68 M 55 60 L 53 68" stroke="#D97706" stroke-width="1" />
-                <circle cx="42" cy="42" r="3" fill="#1E293B" />
-                <circle cx="58" cy="42" r="3" fill="#1E293B" />
-                <ellipse cx="50" cy="46" rx="3" ry="2" fill="#78350F" />
-                <ellipse cx="36" cy="46" rx="3" ry="2" fill="#F472B6" opacity="0.6" />
-                <ellipse cx="64" cy="46" rx="3" ry="2" fill="#F472B6" opacity="0.6" />
-                <path d="M 32 28 C 44 24 56 24 68 28 C 56 25 44 25 32 28 Z" fill="#FFFFFF" opacity="0.75" />
+                <circle cx="50" cy="50" r="44" fill="#FFE4E6" stroke="#FDA4AF" stroke-width="2.5" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-2)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-2)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-2)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-2)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-2)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.75" transform="rotate(-15 46 52)" />
+            `;
+        case 3: // 🧀 치즈 냥이 젤리
+            return `
+                <defs>
+                    <radialGradient id="pad-pink-3" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FFA07A" />
+                        <stop offset="70%" stop-color="#FF6B81" />
+                        <stop offset="100%" stop-color="#D93855" />
+                    </radialGradient>
+                </defs>
+                <circle cx="50" cy="50" r="44" fill="#FFEDD5" stroke="#FDBA74" stroke-width="2.5" />
+                <path d="M 20 25 L 30 30 M 16 35 L 26 38" stroke="#FB923C" stroke-width="3.5" stroke-linecap="round" />
+                <path d="M 80 25 L 70 30 M 84 35 L 74 38" stroke="#FB923C" stroke-width="3.5" stroke-linecap="round" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-3)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-3)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-3)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-3)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-3)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.7" transform="rotate(-15 46 52)" />
+            `;
+        case 4: // 🐱 삼색이 냥이 젤리
+            return `
+                <defs>
+                    <radialGradient id="pad-pink-4" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FFB6C1" />
+                        <stop offset="70%" stop-color="#F472B6" />
+                        <stop offset="100%" stop-color="#BE185D" />
+                    </radialGradient>
+                </defs>
+                <circle cx="50" cy="50" r="44" fill="#FAFAF9" stroke="#E7E5E4" stroke-width="2.5" />
+                <path d="M 16 30 C 24 16 40 20 32 40 C 20 44 12 36 16 30 Z" fill="#F97316" opacity="0.85" />
+                <path d="M 82 30 C 70 16 60 28 68 40 C 80 44 88 34 82 30 Z" fill="#44403C" opacity="0.85" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-4)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-4)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-4)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-4)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-4)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.75" transform="rotate(-15 46 52)" />
+            `;
+        case 5: // 🖤 흑임자 핑크 젤리
+            return `
+                <defs>
+                    <radialGradient id="pad-pink-5" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FF66B2" />
+                        <stop offset="70%" stop-color="#FF1A8C" />
+                        <stop offset="100%" stop-color="#B30059" />
+                    </radialGradient>
+                </defs>
+                <circle cx="50" cy="50" r="44" fill="#292524" stroke="#44403C" stroke-width="2.5" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-5)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-5)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-5)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-5)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-5)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-15 46 52)" />
+            `;
+        case 6: // 🌺 사쿠라 젤리
+            return `
+                <defs>
+                    <radialGradient id="pad-pink-6" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FFC2D1" />
+                        <stop offset="70%" stop-color="#FF70A6" />
+                        <stop offset="100%" stop-color="#D81B60" />
+                    </radialGradient>
+                </defs>
+                <circle cx="50" cy="50" r="44" fill="#FCE7F3" stroke="#F472B6" stroke-width="2.5" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-6)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-6)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-6)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-6)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-6)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.75" transform="rotate(-15 46 52)" />
+            `;
+        case 7: // 🍯 꿀단지 젤리
+            return `
+                <defs>
+                    <radialGradient id="pad-pink-7" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FFB3BA" />
+                        <stop offset="70%" stop-color="#FF5C8A" />
+                        <stop offset="100%" stop-color="#C70039" />
+                    </radialGradient>
+                </defs>
+                <circle cx="50" cy="50" r="44" fill="#FEF3C7" stroke="#FDE047" stroke-width="2.5" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-7)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-7)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-7)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-7)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-7)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.7" transform="rotate(-15 46 52)" />
+            `;
+        case 8: // 🍫 초코 핑크 젤리
+            return `
+                <defs>
+                    <radialGradient id="pad-pink-8" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FF85A2" />
+                        <stop offset="70%" stop-color="#FF477E" />
+                        <stop offset="100%" stop-color="#A61C41" />
+                    </radialGradient>
+                </defs>
+                <circle cx="50" cy="50" r="44" fill="#78350F" stroke="#92400E" stroke-width="2.5" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-8)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-8)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-8)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-8)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-8)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-15 46 52)" />
+            `;
+        case 9: // 🌈 무지개 젤리
+            return `
+                <defs>
+                    <linearGradient id="paw-bg-9" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FFD1DC" />
+                        <stop offset="50%" stop-color="#E0F2FE" />
+                        <stop offset="100%" stop-color="#F3E8FF" />
+                    </linearGradient>
+                    <radialGradient id="pad-pink-9" cx="35%" cy="35%" r="65%">
+                        <stop offset="0%" stop-color="#FFA6C9" />
+                        <stop offset="70%" stop-color="#F472B6" />
+                        <stop offset="100%" stop-color="#C084FC" />
+                    </radialGradient>
+                </defs>
+                <circle cx="50" cy="50" r="44" fill="url(#paw-bg-9)" stroke="#FBCFE8" stroke-width="2.5" />
+                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-9)" transform="rotate(-22 27 38)" />
+                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-9)" transform="rotate(-7 42 27)" />
+                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-9)" transform="rotate(7 58 27)" />
+                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-9)" transform="rotate(22 73 38)" />
+                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-9)" />
+                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-15 46 52)" />
             `;
         default:
             return "";
     }
+}
+
+function getSeaCreatureGraphic(type) {
+    return getCatPawGraphic(type);
 }
 
 function getCosmicStickerSvg(index, isSticker, rawMemo = "") {
@@ -613,16 +597,16 @@ function getCosmicStickerSvg(index, isSticker, rawMemo = "") {
     
     if (!isSticker) {
         return `
-            <svg viewBox="0 0 100 100" class="sea-sticker-svg placeholder" style="opacity: 0.26;">
-                <g filter="grayscale(50%)">
-                    ${getSeaCreatureGraphic(type)}
+            <svg viewBox="0 0 100 100" class="sea-sticker-svg placeholder" style="opacity: 0.35;">
+                <g filter="grayscale(30%)">
+                    ${getCatPawGraphic(type)}
                 </g>
             </svg>
         `;
     }
     return `
         <svg viewBox="0 0 100 100" class="sea-sticker-svg active">
-            ${getSeaCreatureGraphic(type)}
+            ${getCatPawGraphic(type)}
         </svg>
     `;
 }
