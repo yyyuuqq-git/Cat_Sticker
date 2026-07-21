@@ -37,10 +37,10 @@ function isCatBoard(b) {
 
 let initialBoardId = localStorage.getItem("current_board_id");
 if (initialBoardId && !isCatBoard(initialBoardId)) {
-    initialBoardId = "CAT_BOARD_001";
+    initialBoardId = "CAT-BOARD";
     localStorage.setItem("current_board_id", initialBoardId);
 }
-let currentBoardId = initialBoardId || "CAT_BOARD_001";
+let currentBoardId = initialBoardId || "CAT-BOARD";
 let currentBoard = null;
 let currentStickers = [];
 let isEditorMode = localStorage.getItem("is_editor") === "true";
@@ -962,6 +962,15 @@ async function refreshApp() {
         // 1. 보드 정보 로드
         let board = await apiGetBoard(currentBoardId);
         if (!board) {
+            // 요청한 currentBoardId가 DB에 없는 경우, 고양이 보드 전체 목록 중 첫 번째 보드로 자동 전환 시도
+            const allCatBoards = await apiGetAllBoards();
+            if (allCatBoards && allCatBoards.length > 0) {
+                board = allCatBoards[0];
+                currentBoardId = board.id;
+                localStorage.setItem("current_board_id", currentBoardId);
+            }
+        }
+        if (!board) {
             // 보드가 존재하지 않음 -> 초기 설정 화면 노출
             appContent.classList.add("hidden");
             welcomeScreen.classList.remove("hidden");
@@ -1061,6 +1070,60 @@ async function refreshApp() {
         // 로딩 종료 보장
         loadingSpinner.classList.add("hidden");
     }
+}
+
+// 단일 슬롯 DOM 요소 생성 헬퍼
+function createSlotElement(i) {
+    const slot = document.createElement("div");
+    slot.className = "grid-slot";
+
+    let pressTimer = null;
+    let preventClick = false;
+
+    const startPress = (e) => {
+        if (e.type === 'mousedown' && e.button !== 0) return;
+        preventClick = false;
+        pressTimer = setTimeout(() => {
+            preventClick = true;
+            const stickerData = currentStickers.find(s => s.sticker_index === i);
+            handleSlotLongPress(i, !!stickerData);
+        }, 600);
+    };
+
+    const cancelPress = () => {
+        if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+        }
+    };
+
+    const endPress = () => {
+        if (pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
+        }
+    };
+
+    slot.addEventListener("mousedown", startPress);
+    slot.addEventListener("mouseup", endPress);
+    slot.addEventListener("mouseleave", cancelPress);
+
+    slot.addEventListener("touchstart", startPress, { passive: true });
+    slot.addEventListener("touchend", endPress, { passive: true });
+    slot.addEventListener("touchcancel", cancelPress, { passive: true });
+    slot.addEventListener("touchmove", cancelPress, { passive: true });
+
+    slot.addEventListener("click", (e) => {
+        if (preventClick) {
+            e.preventDefault();
+            preventClick = false;
+            return;
+        }
+        const stickerData = currentStickers.find(s => s.sticker_index === i);
+        handleSlotClick(i, !!stickerData);
+    });
+
+    return slot;
 }
 
 // 날짜 포맷 함수
