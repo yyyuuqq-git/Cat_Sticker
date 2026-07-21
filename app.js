@@ -61,8 +61,6 @@ const boardTitle = document.getElementById("board-title");
 const boardCodeDisplay = document.getElementById("board-code-display");
 const progressCount = document.getElementById("progress-count");
 const progressBarFill = document.getElementById("progress-bar-fill");
-const rewardBanner = document.getElementById("reward-banner");
-const rewardText = document.getElementById("reward-text");
 const celebrationBanner = document.getElementById("celebration-banner");
 const celebrationRewardDetail = document.getElementById("celebration-reward-detail");
 const stickerGrid = document.getElementById("sticker-grid");
@@ -966,14 +964,6 @@ async function refreshApp() {
 
     const percentage = Math.min((completedCount / targetCount) * 100, 100);
     progressBarFill.style.width = `${percentage}%`;
-
-    // 보상 배너 처리
-    if (currentBoard.reward_text) {
-        rewardText.textContent = `완료 보상: ${currentBoard.reward_text}`;
-        rewardBanner.classList.remove("hidden");
-    } else {
-        rewardBanner.classList.add("hidden");
-    }
 
     // 축하 배너 처리
     if (completedCount >= targetCount) {
