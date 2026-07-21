@@ -824,7 +824,7 @@ function createBoardItemDOM(board, isLocal) {
     item.innerHTML = `
         <div class="board-item-info">
             <span class="board-item-title">${board.title}</span>
-            <span class="board-item-code">코드: ${board.id}</span>
+            <span class="board-item-code">보상: ${board.reward_text || '없음'}</span>
         </div>
         ${deleteButtonHtml}
     `;
