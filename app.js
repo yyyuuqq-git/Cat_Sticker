@@ -738,13 +738,14 @@ function getRegisteredBoards() {
     return parsed.filter(b => isCatBoard(b));
 }
 
-function addRegisteredBoard(boardId, title) {
+function addRegisteredBoard(boardId, title, rewardText) {
     let list = getRegisteredBoards();
     const existingIndex = list.findIndex(b => b.id === boardId);
     if (existingIndex !== -1) {
         list[existingIndex].title = title;
+        list[existingIndex].reward_text = rewardText;
     } else {
-        list.push({ id: boardId, title: title });
+        list.push({ id: boardId, title: title, reward_text: rewardText });
     }
     localStorage.setItem("registered_boards", JSON.stringify(list));
 }
@@ -948,7 +949,7 @@ async function refreshApp() {
     currentBoard = board;
 
     // 로컬 보드 목록 관리 및 갱신
-    addRegisteredBoard(board.id, board.title);
+    addRegisteredBoard(board.id, board.title, board.reward_text);
     renderBoardList();
 
     // 2. 스티커 정보 로드
@@ -957,7 +958,7 @@ async function refreshApp() {
 
     // 3. 헤더 및 요약 카드 업데이트
     boardTitle.textContent = currentBoard.title;
-    boardCodeDisplay.textContent = `보드 코드: ${currentBoard.id}`;
+    boardCodeDisplay.textContent = `보상: ${currentBoard.reward_text || '없음'}`;
 
     const targetCount = currentBoard.target_count;
     const completedCount = currentStickers.length;
