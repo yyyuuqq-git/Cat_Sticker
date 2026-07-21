@@ -844,7 +844,7 @@ function createBoardItemDOM(board, isLocal) {
     
     const hasPermission = localStorage.getItem("is_editor") === "true";
 
-    // 나의 칭찬판 목록이며 + 동시에 편집 권한(여자친구 PIN)을 갖고 있을 때만 삭제(휴지통) 아이콘 노출
+    // 나의 칭찬판 목록이며 + 동시에 편집 권한(남자친구 PIN)을 갖고 있을 때만 삭제(휴지통) 아이콘 노출
     const deleteButtonHtml = (isLocal && hasPermission) ? `
         <button class="btn-delete-board" title="삭제">
             <span class="material-icons" style="font-size: 16px;">delete</span>
