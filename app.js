@@ -685,6 +685,38 @@ async function apiGetAllBoards() {
     }
 }
 
+// 다음 순차적 보드 코드 생성 (기존 보드 중 마지막 숫자 + 1, 예: CAT_BOARD_001 -> CAT_BOARD_002)
+async function getNextSequentialBoardCode() {
+    const allBoards = await apiGetAllBoards();
+    let maxNum = 0;
+    let prefix = "CAT_BOARD_";
+    let paddingLen = 3;
+    
+    allBoards.forEach(b => {
+        if (b && b.id && !b.id.startsWith("TEST-BOARD-")) {
+            const match = String(b.id).match(/^(.*?)(\d+)$/);
+            if (match) {
+                const currentPrefix = match[1];
+                const numStr = match[2];
+                const num = parseInt(numStr, 10);
+                if (!isNaN(num) && num > maxNum) {
+                    maxNum = num;
+                    if (currentPrefix) prefix = currentPrefix;
+                    if (numStr.length > 1 && numStr.startsWith("0")) {
+                        paddingLen = numStr.length;
+                    }
+                }
+            }
+        }
+    });
+    
+    const nextNum = maxNum + 1;
+    if (paddingLen > 1) {
+        return `${prefix}${String(nextNum).padStart(paddingLen, '0')}`;
+    }
+    return `${prefix}${nextNum}`;
+}
+
 // 보드 이름 수정 API
 async function apiUpdateBoardTitle(boardId, newTitle) {
     let board = await apiGetBoard(boardId);
@@ -1233,34 +1265,25 @@ btnShareClose.addEventListener("click", () => {
     modalShare.classList.add("hidden");
 });
 
-// 새로운 칭찬판 생성 (백그라운드에서 난수 코드 자동 생성 및 대조)
+// 새로운 칭찬판 생성 (마지막 숫자 + 1 순차적 코드 자동 생성)
 btnCreateBoard.addEventListener("click", async () => {
     const titleVal = inputCreateBoardTitle.value.trim();
-    const finalTitle = titleVal || "TEST";
+    const finalTitle = titleVal || "야옹이 칭찬판 🐾";
 
     loadingSpinner.classList.remove("hidden");
     modalShare.classList.add("hidden");
 
-    // 고유한 순차 코드 생성 (예: TEST-BOARD-001)
-    let finalCode = "";
-    let boardNum = 1;
-    while (true) {
-        const numStr = String(boardNum).padStart(3, '0');
-        const tempCode = `TEST-BOARD-${numStr}`;
-        const existing = await apiGetBoard(tempCode);
-        if (!existing) {
-            finalCode = tempCode;
-            break;
-        }
-        boardNum++;
-    }
+    // 순차적 보드 코드 생성 (마지막 숫자 + 1, 예: CAT_BOARD_001 -> CAT_BOARD_002)
+    const finalCode = await getNextSequentialBoardCode();
 
     const newBoard = {
         id: finalCode,
         title: finalTitle,
         target_count: 30,
-        reward_text: "새로운 선물 지정하기",
-        editor_pin: currentBoard ? currentBoard.editor_pin : "1234"
+        reward_text: "맛있는 츄르 선물하기 🐟",
+        editor_pin: currentBoard ? currentBoard.editor_pin : "1234",
+        reader_role_name: "여자친구 모드 (조회 전용)",
+        editor_role_name: "남자친구 모드 (부착 가능)"
     };
 
     const success = await apiCreateBoard(newBoard);
@@ -1268,12 +1291,12 @@ btnCreateBoard.addEventListener("click", async () => {
         currentBoardId = finalCode;
         localStorage.setItem("current_board_id", finalCode);
         localStorage.setItem("is_editor", "true"); // 신규 생성 시 즉시 자동 로그인 세션 등록
-        inputCreateBoardTitle.value = ""; // 입력창 초기화
-        isEditorMode = true; // 새로 만든 판은 즉시 편집자 권한 부여
+        inputCreateBoardTitle.value = "";
+        isEditorMode = true;
         updateRoleUI();
         await refreshApp();
         
-        showToast("새 칭찬판이 생성되었습니다! 🚀");
+        showToast("새 야옹이 칭찬판이 생성되었습니다! 🐾");
     } else {
         showToast("칭찬판 개설에 실패했습니다.");
         loadingSpinner.classList.add("hidden");
