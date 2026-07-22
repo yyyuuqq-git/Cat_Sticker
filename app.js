@@ -594,13 +594,7 @@ function getCosmicStickerSvg(index, isSticker, rawMemo = "") {
     const type = (parsed.type !== null && parsed.type >= 0 && parsed.type < 10) ? parsed.type : (index % 10);
     
     if (!isSticker) {
-        return `
-            <svg viewBox="0 0 100 100" class="sea-sticker-svg placeholder" style="opacity: 0.35;">
-                <g filter="grayscale(30%)">
-                    ${getCatPawGraphic(type)}
-                </g>
-            </svg>
-        `;
+        return "";
     }
     return `
         <svg viewBox="0 0 100 100" class="sea-sticker-svg active">
@@ -966,7 +960,7 @@ function createBoardItemDOM(board, isLocal) {
         pressTimer = setTimeout(() => {
             const canEdit = localStorage.getItem("is_editor") === "true";
             if (!canEdit) {
-                showToast("편집자 권한(여자친구 모드)에서만 스티커판 순서를 변경할 수 있습니다. 🔒");
+                showToast("편집자 권한(남자친구 모드)에서만 스티커판 순서를 변경할 수 있습니다. 🔒");
                 return;
             }
 

@@ -26,3 +26,13 @@
 - **Non-Technical Language (비전공자 맞춤)**: Write patch notes in clear, friendly, non-technical language that anyone can easily understand. Avoid developer jargon (e.g., API, CSS translate3d, Reflow, DB schema, JSON, E2E).
 - **Frontend & UI/UX Scope Only**: Focus strictly on user-facing frontend features, visual design, screen animations, and user experience enhancements.
 - **Single UI Artifact Format**: Never create individual `PATCH_NOTES.md` files inside project repository directories. Always generate ONLY ONE unified, beautiful Artifact document (`PATCH_NOTES_vX.X.X.md`) presented directly in the IDE UI for the user.
+
+## Rule 7: Localhost Testing and Safe Live Deployment Workflow
+- **Local First & Localhost Verification**: Always apply code modifications to local workspace files first. Perform preview testing on localhost (`http://localhost:...`) so changes can be verified safely without immediately affecting live deployed sites.
+- **Explicit Push / Deployment Request Required**: Do not commit and push changes to live production GitHub repositories (`main` branch) until local verification is complete and the user explicitly requests or confirms deployment.
+
+## Rule 8: Cat Project Role Assignment (고양이 스티커판 전용 역할 지정)
+- **Cat Project Specific**: This rule applies ONLY to `칭찬스티커 (고양이)`.
+- **Boyfriend = Editor (남자친구 = 관리자 / 편집자)**: The boyfriend manages the sticker board, enters PIN to unlock editor mode, attaches/removes stickers, edits titles, and reorders sticker boards.
+- **Girlfriend = Reader (여자친구 = 조회자)**: The girlfriend views the sticker board in read-only mode.
+- All default fallback text, toast notifications, PIN modal titles, and setting labels in `칭찬스티커 (고양이)` must strictly observe this role mapping (Boyfriend = Editor / Girlfriend = Reader).
