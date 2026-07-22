@@ -259,10 +259,16 @@ async function apiGetStickers(boardId) {
         return localData ? JSON.parse(localData) : [];
     } else {
         try {
-            const { data, error } = await supabaseClient
+            const fetchPromise = supabaseClient
                 .from("praise_stickers")
                 .select("*")
                 .eq("board_id", boardId);
+
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("Supabase timeout")), 3500)
+            );
+
+            const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
             if (error) throw error;
             localStorage.setItem(`stickers_${boardId}`, JSON.stringify(data));
             return data;
@@ -657,10 +663,16 @@ async function apiGetAllBoards() {
         return boards;
     } else {
         try {
-            const { data, error } = await supabaseClient
+            const fetchPromise = supabaseClient
                 .from("praise_boards")
                 .select("*")
                 .order("created_at", { ascending: true });
+
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("Supabase timeout")), 3500)
+            );
+
+            const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
             if (error) throw error;
             return (data || []).filter(b => isCatBoard(b));
         } catch (e) {
