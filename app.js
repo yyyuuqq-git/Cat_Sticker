@@ -379,7 +379,6 @@ const CAT_PAWS = [
     { id: 8, name: "초코 핑크 젤리 🍫", emoji: "🐾" },
     { id: 9, name: "무지개 젤리 🌈", emoji: "🐾" }
 ];
-const SEA_CREATURES = CAT_PAWS; // 호환성 유지
 
 let selectedStickerType = 0;
 
@@ -582,16 +581,7 @@ function getCatPawGraphic(type) {
                 <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-9)" />
                 <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-15 46 52)" />
             `;
-        default:
-            return "";
-    }
-}
-
-function getSeaCreatureGraphic(type) {
-    return getCatPawGraphic(type);
-}
-
-function getCosmicStickerSvg(index, isSticker, rawMemo = "") {
+function getCatStickerSvg(index, isSticker, rawMemo = "") {
     const parsed = parseStickerMemo(rawMemo);
     const type = (parsed.type !== null && parsed.type >= 0 && parsed.type < 10) ? parsed.type : (index % 10);
     
@@ -599,7 +589,7 @@ function getCosmicStickerSvg(index, isSticker, rawMemo = "") {
         return "";
     }
     return `
-        <svg viewBox="0 0 100 100" class="sea-sticker-svg active">
+        <svg viewBox="0 0 100 100" class="cat-sticker-svg active">
             ${getCatPawGraphic(type)}
         </svg>
     `;
@@ -610,24 +600,29 @@ function renderStickerPickerGrid() {
     if (!gridContainer) return;
     gridContainer.innerHTML = "";
     
-    SEA_CREATURES.forEach(creature => {
+    CAT_PAWS.forEach(creature => {
         const isSel = creature.id === selectedStickerType;
         const item = document.createElement("div");
         item.className = `sticker-option-item ${isSel ? "selected" : ""}`;
+        item.dataset.creatureId = creature.id;
         item.innerHTML = `
             <div class="sticker-option-icon">
                 <svg viewBox="0 0 100 100" style="width:100%; height:100%;">
-                    ${getSeaCreatureGraphic(creature.id)}
+                    ${getCatPawGraphic(creature.id)}
                 </svg>
             </div>
             <span class="sticker-option-label">${creature.name}</span>
         `;
         
-        item.addEventListener("click", () => {
+        const selectHandler = (e) => {
+            if (e) e.stopPropagation();
             selectedStickerType = creature.id;
-            document.querySelectorAll(".sticker-option-item").forEach(el => el.classList.remove("selected"));
+            gridContainer.querySelectorAll(".sticker-option-item").forEach(el => el.classList.remove("selected"));
             item.classList.add("selected");
-        });
+        };
+
+        item.addEventListener("click", selectHandler);
+        item.addEventListener("touchstart", selectHandler, { passive: true });
         
         gridContainer.appendChild(item);
     });
@@ -1193,7 +1188,7 @@ async function refreshApp() {
                 slot.className = `grid-slot ${isActive ? "active" : ""}`;
                 slot.setAttribute("data-memo", rawMemo);
                 slot.innerHTML = `
-                    ${getCosmicStickerSvg(i, isActive, rawMemo)}
+                    ${getCatStickerSvg(i, isActive, rawMemo)}
                     <span class="slot-number">${i + 1}</span>
                 `;
             }
