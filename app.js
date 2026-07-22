@@ -581,6 +581,11 @@ function getCatPawGraphic(type) {
                 <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-9)" />
                 <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-15 46 52)" />
             `;
+        default:
+            return "";
+    }
+}
+
 function getCatStickerSvg(index, isSticker, rawMemo = "") {
     const parsed = parseStickerMemo(rawMemo);
     const type = (parsed.type !== null && parsed.type >= 0 && parsed.type < 10) ? parsed.type : (index % 10);
@@ -1682,8 +1687,8 @@ btnMemoSubmit.addEventListener("click", async () => {
 
     const success = await apiAddSticker(currentBoardId, memoTargetIndex, formattedMemo);
     if (success) {
-        const creatureName = SEA_CREATURES[selectedStickerType] ? SEA_CREATURES[selectedStickerType].name : "해양생물";
-        showToast(`${memoTargetIndex + 1}번째 칸에 ${creatureName} 스티커 부착 완료! 🌊💙`);
+        const pawName = CAT_PAWS[selectedStickerType] ? CAT_PAWS[selectedStickerType].name : "고양이 젤리";
+        showToast(`${memoTargetIndex + 1}번째 칸에 ${pawName} 스티커 부착 완료! 🐾💖`);
         memoTargetIndex = null;
         await refreshApp();
     } else {
