@@ -92,6 +92,22 @@ const editEditorName = document.getElementById("edit-editor-name");
 const btnSettingsClose = document.getElementById("btn-settings-close");
 const btnSettingsSave = document.getElementById("btn-settings-save");
 
+// RGB 색상 팔레트 모달 요소
+const btnColorPalette = document.getElementById("btn-color-palette");
+const modalColorPalette = document.getElementById("modal-color-palette");
+const btnColorApply = document.getElementById("btn-color-apply");
+const btnColorReset = document.getElementById("btn-color-reset");
+const btnColorClose = document.getElementById("btn-color-close");
+const rangeR = document.getElementById("range-r");
+const rangeG = document.getElementById("range-g");
+const rangeB = document.getElementById("range-b");
+const valR = document.getElementById("val-r");
+const valG = document.getElementById("val-g");
+const valB = document.getElementById("val-b");
+const colorPreviewBox = document.getElementById("color-preview-box");
+const colorPreviewText = document.getElementById("color-preview-text");
+const inputCustomColor = document.getElementById("input-custom-color");
+
 // 칭찬판 정보 수정 모달 요소 (길게 누르기 연동)
 const modalBoardEdit = document.getElementById("modal-board-edit");
 const editBoardTitle = document.getElementById("edit-board-title");
@@ -365,6 +381,65 @@ async function apiRemoveSticker(boardId, index) {
             return true;
         } catch (e) {
             console.error("스티커 제거 실패", e);
+            return false;
+        }
+    }
+}
+
+// 테마 색상 메타데이터 DB/로컬 저장 (인덱스 999 전용 레코드 활용 - 스키마 호환 100% 보장)
+async function apiSaveThemeColor(boardId, hex) {
+    if (!hex || !boardId) return;
+    hex = hex.toUpperCase();
+    const memoStr = `[theme:${hex}]`;
+    const nowISO = new Date().toISOString();
+
+    localStorage.setItem(`board_theme_color_${boardId}`, hex);
+
+    if (isLocalMode || !supabaseClient) {
+        let current = await apiGetStickers(boardId);
+        let themeSticker = current.find(s => s.sticker_index === 999);
+        if (themeSticker) {
+            themeSticker.memo = memoStr;
+            themeSticker.updated_at = nowISO;
+        } else {
+            current.push({
+                board_id: boardId,
+                sticker_index: 999,
+                memo: memoStr,
+                created_at: nowISO,
+                updated_at: nowISO
+            });
+        }
+        localStorage.setItem(`stickers_${boardId}`, JSON.stringify(current));
+        return true;
+    } else {
+        try {
+            const { data } = await supabaseClient
+                .from("praise_stickers")
+                .select("id")
+                .eq("board_id", boardId)
+                .eq("sticker_index", 999)
+                .maybeSingle();
+
+            if (data) {
+                await supabaseClient
+                    .from("praise_stickers")
+                    .update({ memo: memoStr, updated_at: nowISO })
+                    .eq("id", data.id);
+            } else {
+                await supabaseClient
+                    .from("praise_stickers")
+                    .insert({
+                        board_id: boardId,
+                        sticker_index: 999,
+                        memo: memoStr,
+                        created_at: nowISO,
+                        updated_at: nowISO
+                    });
+            }
+            return true;
+        } catch (e) {
+            console.error("테마 색상 DB 싱크 실패", e);
             return false;
         }
     }
@@ -1110,6 +1185,37 @@ function createBoardItemDOM(board, isLocal) {
 // 6. UI 업데이트 및 렌더링 로직
 // ==========================================
 
+let realtimeChannel = null;
+function setupRealtimeSubscription(boardId) {
+    if (!supabaseClient || !boardId || isLocalMode) return;
+    if (realtimeChannel) {
+        supabaseClient.removeChannel(realtimeChannel);
+        realtimeChannel = null;
+    }
+    try {
+        realtimeChannel = supabaseClient
+            .channel(`public:praise_stickers:${boardId}`)
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'praise_stickers', filter: `board_id=eq.${boardId}` },
+                (payload) => {
+                    const newRecord = payload.new;
+                    if (newRecord && newRecord.sticker_index === 999) {
+                        const match = (newRecord.memo || "").match(/\[theme:(#[0-9A-Fa-f]{6})\]/);
+                        if (match) {
+                            applyThemeColor(match[1], false);
+                        }
+                    } else {
+                        refreshApp();
+                    }
+                }
+            )
+            .subscribe();
+    } catch (e) {
+        console.warn("Realtime 구독 설정 에러:", e);
+    }
+}
+
 // 현재 화면 리프레시
 async function refreshApp() {
     try {
@@ -1150,13 +1256,30 @@ async function refreshApp() {
         // 보드가 정상적으로 로드된 경우 설정창 숨기고 콘텐츠 노출
         welcomeScreen.classList.add("hidden");
         currentBoard = board;
+        setupRealtimeSubscription(board.id);
 
         // 로컬 보드 목록 관리 및 갱신
         addRegisteredBoard(board.id, board.title, board.reward_text);
         renderBoardList();
 
         // 2. 스티커 정보 로드
-        currentStickers = await apiGetStickers(currentBoardId);
+        const rawStickers = await apiGetStickers(currentBoardId);
+
+        // 2.5 테마 메타데이터(sticker_index === 999) 감지 및 즉시 적용
+        const themeMeta = rawStickers.find(s => s.sticker_index === 999);
+        let activeThemeColor = (currentBoard && currentBoard.theme_color) || localStorage.getItem(`board_theme_color_${currentBoardId}`) || "#EC4899";
+        if (themeMeta && themeMeta.memo) {
+            const match = themeMeta.memo.match(/\[theme:(#[0-9A-Fa-f]{6})\]/);
+            if (match) {
+                activeThemeColor = match[1];
+                localStorage.setItem(`board_theme_color_${currentBoardId}`, activeThemeColor);
+                if (currentBoard) currentBoard.theme_color = activeThemeColor;
+            }
+        }
+        applyThemeColor(activeThemeColor, false);
+
+        // 실제 보드에 표시할 스티커만 필터링 (index < 100)
+        currentStickers = rawStickers.filter(s => s.sticker_index < 100);
         const activeIndices = new Set(currentStickers.map(s => s.sticker_index));
 
         // 3. 헤더 및 요약 카드 업데이트
@@ -1772,8 +1895,162 @@ btnMemoEditSave.addEventListener("click", async () => {
         showToast("메모 수정에 실패했습니다.");
         loadingSpinner.classList.add("hidden");
         modalMemoView.classList.remove("hidden");
+// ==========================================
+// 8.5 RGB 색상 팔레트 및 전역 테마 처리 헬퍼
+// ==========================================
+function hexToRgb(hex) {
+    hex = hex.replace(/^#/, '');
+    if (hex.length === 3) {
+        hex = hex.split('').map(c => c + c).join('');
     }
+    const num = parseInt(hex, 16);
+    return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+    };
+}
+
+function rgbToHex(r, g, b) {
+    const toHex = (c) => Math.max(0, Math.min(255, c)).toString(16).padStart(2, '0');
+    return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
+}
+
+function adjustColorBrightness(hex, percent) {
+    const { r, g, b } = hexToRgb(hex);
+    const adjust = (val) => Math.max(0, Math.min(255, Math.round(val + (255 * (percent / 100)))));
+    return rgbToHex(adjust(r), adjust(g), adjust(b));
+}
+
+function updatePaletteUI(hex) {
+    if (!hex) hex = "#EC4899";
+    hex = hex.toUpperCase();
+    const { r, g, b } = hexToRgb(hex);
+
+    if (rangeR) rangeR.value = r;
+    if (rangeG) rangeG.value = g;
+    if (rangeB) rangeB.value = b;
+    if (valR) valR.textContent = r;
+    if (valG) valG.textContent = g;
+    if (valB) valB.textContent = b;
+    if (inputCustomColor) inputCustomColor.value = hex;
+
+    if (colorPreviewBox) colorPreviewBox.style.backgroundColor = hex;
+    if (colorPreviewText) colorPreviewText.textContent = hex;
+
+    const presetBtns = document.querySelectorAll(".color-preset-btn");
+    presetBtns.forEach(btn => {
+        if (btn.getAttribute("data-color").toUpperCase() === hex) {
+            btn.classList.add("active");
+        } else {
+            btn.classList.remove("active");
+        }
+    });
+}
+
+function applyThemeColor(hex, save = false) {
+    if (!hex) hex = "#EC4899";
+    hex = hex.toUpperCase();
+
+    const darkHex = adjustColorBrightness(hex, -25);
+    const lightHex = adjustColorBrightness(hex, 85);
+    const bgStart = adjustColorBrightness(hex, 75);
+    const bgEnd = adjustColorBrightness(hex, 60);
+    const { r, g, b } = hexToRgb(hex);
+    const glowStr = `rgba(${r}, ${g}, ${b}, 0.35)`;
+
+    document.documentElement.style.setProperty("--stitch-primary", hex);
+    document.documentElement.style.setProperty("--stitch-primary-dark", darkHex);
+    document.documentElement.style.setProperty("--stitch-primary-light", lightHex);
+    document.documentElement.style.setProperty("--stitch-bg-gradient-start", bgStart);
+    document.documentElement.style.setProperty("--stitch-bg-gradient-end", bgEnd);
+    document.documentElement.style.setProperty("--stitch-glow", glowStr);
+
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    if (metaTheme) metaTheme.setAttribute("content", hex);
+
+    if (save && currentBoardId) {
+        localStorage.setItem(`board_theme_color_${currentBoardId}`, hex);
+        if (currentBoard) {
+            currentBoard.theme_color = hex;
+        }
+        apiSaveThemeColor(currentBoardId, hex);
+    }
+}
+
+// 팔레트 모달 이벤트 핸들러 바인딩
+if (btnColorPalette) {
+    btnColorPalette.addEventListener("click", () => {
+        if (!isEditorMode) {
+            modalPin.classList.remove("hidden");
+            if (inputPin) inputPin.focus();
+            showToast("테마 색상 변경은 편집자 권한(비밀번호 PIN 인증)이 필요합니다. 🔒");
+            return;
+        }
+        const savedColor = (currentBoard && currentBoard.theme_color) || localStorage.getItem(`board_theme_color_${currentBoardId}`) || "#EC4899";
+        updatePaletteUI(savedColor);
+        modalColorPalette.classList.remove("hidden");
+    });
+}
+
+if (btnColorClose) {
+    btnColorClose.addEventListener("click", () => {
+        modalColorPalette.classList.add("hidden");
+    });
+}
+
+function onRgbSliderChange() {
+    const r = parseInt(rangeR.value, 10) || 0;
+    const g = parseInt(rangeG.value, 10) || 0;
+    const b = parseInt(rangeB.value, 10) || 0;
+    const hex = rgbToHex(r, g, b);
+    updatePaletteUI(hex);
+}
+
+if (rangeR) rangeR.addEventListener("input", onRgbSliderChange);
+if (rangeG) rangeG.addEventListener("input", onRgbSliderChange);
+if (rangeB) rangeB.addEventListener("input", onRgbSliderChange);
+
+if (inputCustomColor) {
+    inputCustomColor.addEventListener("input", (e) => {
+        updatePaletteUI(e.target.value);
+    });
+}
+
+document.querySelectorAll(".color-preset-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const color = btn.getAttribute("data-color");
+        updatePaletteUI(color);
+    });
 });
+
+if (btnColorReset) {
+    btnColorReset.addEventListener("click", () => {
+        if (!isEditorMode) {
+            showToast("편집 권한이 필요합니다. 🔒");
+            return;
+        }
+        updatePaletteUI("#EC4899");
+        applyThemeColor("#EC4899", true);
+        showToast("테마 색상이 기본값(#EC4899)으로 초기화되었습니다.");
+    });
+}
+
+if (btnColorApply) {
+    btnColorApply.addEventListener("click", () => {
+        if (!isEditorMode) {
+            showToast("편집 권한이 필요합니다. 🔒");
+            return;
+        }
+        const r = parseInt(rangeR.value, 10) || 0;
+        const g = parseInt(rangeG.value, 10) || 0;
+        const b = parseInt(rangeB.value, 10) || 0;
+        const hex = rgbToHex(r, g, b);
+        applyThemeColor(hex, true);
+        modalColorPalette.classList.add("hidden");
+        showToast(`테마 색상이 ${hex} (으)로 변경되었습니다! 🎨`);
+    });
+}
 
 // ==========================================
 // 9. 앱 초기 구동 및 실시간 데이터 싱크 폴링
