@@ -1283,6 +1283,9 @@ async function refreshApp() {
         // 보드가 정상적으로 로드된 경우 설정창 숨기고 콘텐츠 노출
         welcomeScreen.classList.add("hidden");
         currentBoard = board;
+        if (board && board.editor_pin) {
+            localStorage.setItem(`board_pin_${board.id}`, board.editor_pin);
+        }
         setupRealtimeSubscription(board.id);
 
         // 로컬 보드 목록 관리 및 갱신
@@ -1367,7 +1370,7 @@ async function refreshApp() {
         if (editAppTitle) editAppTitle.value = savedAppTitle;
         if (editReaderName) editReaderName.value = currentBoard.reader_role_name || "여자친구 모드 (조회 전용)";
         if (editEditorName) editEditorName.value = currentBoard.editor_role_name || "남자친구 모드 (부착 가능)";
-        if (editPin) editPin.value = currentBoard.editor_pin || "";
+        if (editPin) editPin.value = (currentBoard && currentBoard.editor_pin) || localStorage.getItem(`board_pin_${currentBoardId}`) || "1234";
 
         // 컨텐츠 표출
         appContent.classList.remove("hidden");
@@ -1570,12 +1573,12 @@ function showToast(message) {
 // PIN 번호 확인 처리
 btnPinSubmit.addEventListener("click", () => {
     const pin = inputPin.value.trim();
-    const requiredPin = localStorage.getItem("global_editor_pin") || (currentBoard && currentBoard.editor_pin) || "1234";
+    const requiredPin = (currentBoard && currentBoard.editor_pin) || localStorage.getItem(`board_pin_${currentBoardId}`) || "1234";
 
     if (pin === requiredPin) {
         isEditorMode = true;
-        localStorage.setItem("is_editor", "true"); // 전역 인증 승인
-        localStorage.setItem("global_editor_pin", pin);
+        localStorage.setItem("is_editor", "true");
+        localStorage.setItem(`board_pin_${currentBoardId}`, pin);
         inputPin.value = "";
         pinError.classList.add("hidden");
         modalPin.classList.add("hidden");
@@ -1631,12 +1634,15 @@ btnCreateBoard.addEventListener("click", async () => {
     // 순차적 보드 코드 생성 (마지막 숫자 + 1, 예: CAT_BOARD_001 -> CAT_BOARD_002)
     const finalCode = await getNextSequentialBoardCode();
 
+    const activeColor = (currentBoard && currentBoard.theme_color) || localStorage.getItem(`board_theme_color_${currentBoardId}`) || "#EC4899";
+    const activePin = (currentBoard && currentBoard.editor_pin) || localStorage.getItem(`board_pin_${currentBoardId}`) || "1234";
+
     const newBoard = {
         id: finalCode,
         title: finalTitle,
         target_count: 30,
         reward_text: "맛있는 츄르 선물하기 🐟",
-        editor_pin: currentBoard ? currentBoard.editor_pin : "1234",
+        editor_pin: activePin,
         reader_role_name: "여자친구 모드 (조회 전용)",
         editor_role_name: "남자친구 모드 (부착 가능)",
         created_at: new Date().toISOString()
@@ -1646,7 +1652,10 @@ btnCreateBoard.addEventListener("click", async () => {
     if (success) {
         currentBoardId = finalCode;
         localStorage.setItem("current_board_id", finalCode);
-        localStorage.setItem("is_editor", "true"); // 신규 생성 시 즉시 자동 로그인 세션 등록
+        localStorage.setItem(`board_pin_${finalCode}`, activePin);
+        localStorage.setItem(`board_theme_color_${finalCode}`, activeColor);
+        await apiSaveThemeColor(finalCode, activeColor);
+        localStorage.setItem("is_editor", "true");
         inputCreateBoardTitle.value = "";
         isEditorMode = true;
         updateRoleUI();
@@ -1713,7 +1722,7 @@ btnSettingsSave.addEventListener("click", async () => {
         localStorage.setItem("global_app_title", newAppTitle);
         if (appMainLogo) appMainLogo.textContent = newAppTitle;
     }
-    if (newPin) localStorage.setItem("global_editor_pin", newPin);
+    if (newPin) localStorage.setItem(`board_pin_${currentBoardId}`, newPin);
     if (newReaderName) localStorage.setItem("global_reader_role_name", newReaderName);
     if (newEditorName) localStorage.setItem("global_editor_role_name", newEditorName);
 
