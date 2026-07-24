@@ -31,8 +31,9 @@ function isCatBoard(b) {
     const idStr = String(typeof b === 'string' ? b : (b.id || "")).toUpperCase();
     const titleStr = String(typeof b === 'object' && b.title ? b.title : "").toUpperCase();
     if (idStr.startsWith("TEST-BOARD-") || idStr === "TEST-BOARD") return false;
-    if (idStr.startsWith("CAT") || idStr.includes("KITTY") || titleStr.includes("고양이") || titleStr.includes("야옹")) return true;
-    return false;
+    if (idStr.startsWith("CHAEDO") || idStr.includes("VEGE") || titleStr.includes("채소")) return false;
+    if (idStr.startsWith("MOON") || titleStr.includes("달")) return false;
+    return true;
 }
 
 let initialBoardId = localStorage.getItem("current_board_id");
@@ -199,7 +200,31 @@ async function apiGetBoard(boardId) {
             console.error("보드 조회 중 서버 에러 발생, 캐시를 반환합니다.", e);
             const cached = localStorage.getItem(`board_${boardId}`);
             if (cached) return JSON.parse(cached);
-            return null;
+        }
+    }
+}
+
+// 모든 고양이 보드 가져오기
+async function apiGetAllBoards() {
+    if (isLocalMode || !supabaseClient) {
+        return getRegisteredBoards();
+    } else {
+        try {
+            const fetchPromise = supabaseClient
+                .from("praise_boards")
+                .select("*");
+
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("Supabase timeout")), 3500)
+            );
+
+            const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
+            if (error) throw error;
+            const catBoards = (data || []).filter(b => isCatBoard(b));
+            return catBoards;
+        } catch (e) {
+            console.error("전체 보드 목록 조회 중 서버 에러 발생, 캐시를 반환합니다.", e);
+            return getRegisteredBoards();
         }
     }
 }
@@ -913,64 +938,67 @@ let lastBoardListFingerprint = "";
 // 사이드바 내부 보드 목록 동적 렌더링 (지능적 핑거프린트 대조로 깜빡임 완전 방지)
 async function renderBoardList(force = false) {
     if (!boardListContainer) return;
-    
-    // 1. 서버 및 로컬 전체 보드 목록 가져오기
-    let serverBoards = await apiGetAllBoards();
-    let localList = getRegisteredBoards();
-    
-    // 통합 맵으로 중복 제거 및 병합 (서버에 새로 생성된 보드도 자동 표시되도록 함)
-    const boardMap = new Map();
-    serverBoards.forEach(b => {
-        if (b && b.id) {
-            boardMap.set(b.id, { ...b });
-        }
-    });
-    localList.forEach(b => {
-        if (b && b.id) {
-            const existing = boardMap.get(b.id) || {};
-            boardMap.set(b.id, { ...existing, ...b });
-        }
-    });
-    
-    const combinedList = Array.from(boardMap.values());
-
-    // 1.5 저장된 사용자 지정 보드 순서 적용
-    const orderList = getBoardOrder();
-    if (orderList.length > 0) {
-        combinedList.sort((a, b) => {
-            const idxA = orderList.indexOf(a.id);
-            const idxB = orderList.indexOf(b.id);
-            if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-            if (idxA !== -1) return -1;
-            if (idxB !== -1) return 1;
-            return 0;
+    try {
+        // 1. 서버 및 로컬 전체 보드 목록 가져오기
+        let serverBoards = (await apiGetAllBoards()) || [];
+        let localList = getRegisteredBoards() || [];
+        
+        // 통합 맵으로 중복 제거 및 병합 (서버에 새로 생성된 보드도 자동 표시되도록 함)
+        const boardMap = new Map();
+        serverBoards.forEach(b => {
+            if (b && b.id) {
+                boardMap.set(b.id, { ...b });
+            }
         });
-    }
-
-    const fingerprint = combinedList.map(b => `${b.id}:${b.title}:${b.reward_text}:${b.id === currentBoardId}`).join('|');
-    
-    // 변경 사항이 없으면 DOM 재작성 금지 (깜빡임 완전 차단!)
-    if (!force && fingerprint === lastBoardListFingerprint) {
-        return;
-    }
-    lastBoardListFingerprint = fingerprint;
-
-    boardListContainer.innerHTML = "";
-    
-    // 2. 단일 리스트로 깔끔하게 렌더링
-    if (combinedList.length === 0) {
-        const emptyMsg = document.createElement("div");
-        emptyMsg.style.fontSize = "11px";
-        emptyMsg.style.color = "var(--text-muted)";
-        emptyMsg.style.textAlign = "center";
-        emptyMsg.style.padding = "10px 0";
-        emptyMsg.textContent = "등록된 스티커판이 없습니다. 🧸";
-        boardListContainer.appendChild(emptyMsg);
-    } else {
-        combinedList.forEach(board => {
-            const item = createBoardItemDOM(board, true);
-            boardListContainer.appendChild(item);
+        localList.forEach(b => {
+            if (b && b.id) {
+                const existing = boardMap.get(b.id) || {};
+                boardMap.set(b.id, { ...existing, ...b });
+            }
         });
+        
+        const combinedList = Array.from(boardMap.values());
+
+        // 1.5 저장된 사용자 지정 보드 순서 적용
+        const orderList = getBoardOrder() || [];
+        if (orderList.length > 0) {
+            combinedList.sort((a, b) => {
+                const idxA = orderList.indexOf(a.id);
+                const idxB = orderList.indexOf(b.id);
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                if (idxA !== -1) return -1;
+                if (idxB !== -1) return 1;
+                return 0;
+            });
+        }
+
+        const fingerprint = combinedList.map(b => `${b.id}:${b.title}:${b.reward_text}:${b.id === currentBoardId}`).join('|');
+        
+        // 변경 사항이 없으면 DOM 재작성 금지 (깜빡임 완전 차단!)
+        if (!force && fingerprint === lastBoardListFingerprint) {
+            return;
+        }
+        lastBoardListFingerprint = fingerprint;
+
+        boardListContainer.innerHTML = "";
+        
+        // 2. 단일 리스트로 깔끔하게 렌더링
+        if (combinedList.length === 0) {
+            const emptyMsg = document.createElement("div");
+            emptyMsg.style.fontSize = "11px";
+            emptyMsg.style.color = "var(--text-muted)";
+            emptyMsg.style.textAlign = "center";
+            emptyMsg.style.padding = "10px 0";
+            emptyMsg.textContent = "등록된 스티커판이 없습니다. 🧸";
+            boardListContainer.appendChild(emptyMsg);
+        } else {
+            combinedList.forEach(board => {
+                const item = createBoardItemDOM(board, true);
+                boardListContainer.appendChild(item);
+            });
+        }
+    } catch (e) {
+        console.error("renderBoardList 렌더링 중 오류:", e);
     }
 }
 
@@ -1895,6 +1923,8 @@ btnMemoEditSave.addEventListener("click", async () => {
         showToast("메모 수정에 실패했습니다.");
         loadingSpinner.classList.add("hidden");
         modalMemoView.classList.remove("hidden");
+    }
+});
 // ==========================================
 // 8.5 RGB 색상 팔레트 및 전역 테마 처리 헬퍼
 // ==========================================
