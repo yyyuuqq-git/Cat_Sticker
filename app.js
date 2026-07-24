@@ -32,7 +32,7 @@ function isCatBoard(b) {
     const titleStr = String(typeof b === 'object' && b.title ? b.title : "").toUpperCase();
     if (idStr.startsWith("TEST-BOARD-") || idStr === "TEST-BOARD") return false;
     if (idStr.startsWith("CHAEDO") || idStr.includes("VEGE") || idStr.includes("VEGETABLE") || titleStr.includes("채소") || titleStr.includes("야채") || titleStr.includes("당근")) return false;
-    if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("별")) return false;
+    if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("BON_WOOK") || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("별")) return false;
     return true;
 }
 
