@@ -31,8 +31,8 @@ function isCatBoard(b) {
     const idStr = String(typeof b === 'string' ? b : (b.id || "")).toUpperCase();
     const titleStr = String(typeof b === 'object' && b.title ? b.title : "").toUpperCase();
     if (idStr.startsWith("TEST-BOARD-") || idStr === "TEST-BOARD") return false;
-    if (idStr.startsWith("CHAEDO") || idStr.includes("VEGE") || titleStr.includes("채소")) return false;
-    if (idStr.startsWith("MOON") || titleStr.includes("달")) return false;
+    if (idStr.startsWith("CHAEDO") || idStr.includes("VEGE") || idStr.includes("VEGETABLE") || titleStr.includes("채소") || titleStr.includes("야채") || titleStr.includes("당근")) return false;
+    if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("별")) return false;
     return true;
 }
 
@@ -795,25 +795,21 @@ async function apiGetAllBoards() {
     }
 }
 
-// 다음 순차적 보드 코드 생성 (기존 보드 중 마지막 숫자 + 1, 예: CAT_BOARD_001 -> CAT_BOARD_002)
+// 다음 순차적 보드 코드 생성 (기존 보드 중 마지막 숫자 + 1, 예: CAT-BOARD_1, CAT-BOARD_2)
 async function getNextSequentialBoardCode() {
     const allBoards = await apiGetAllBoards();
     let maxNum = 0;
-    let prefix = "CAT_BOARD_";
-    let paddingLen = 3;
+    const basePrefix = "CAT-BOARD_";
     
     allBoards.forEach(b => {
-        if (b && b.id && !b.id.startsWith("TEST-BOARD-")) {
-            const match = String(b.id).match(/^(.*?)(\d+)$/);
-            if (match) {
-                const currentPrefix = match[1];
-                const numStr = match[2];
-                const num = parseInt(numStr, 10);
-                if (!isNaN(num) && num > maxNum) {
-                    maxNum = num;
-                    if (currentPrefix) prefix = currentPrefix;
-                    if (numStr.length > 1 && numStr.startsWith("0")) {
-                        paddingLen = numStr.length;
+        if (b && b.id) {
+            const idStr = String(b.id).toUpperCase();
+            if (idStr.startsWith("CAT-BOARD_") || idStr.startsWith("CAT-BOARD") || idStr.startsWith("CAT_BOARD")) {
+                const match = idStr.match(/CAT[-_]BOARD_?(\d+)$/);
+                if (match) {
+                    const num = parseInt(match[1], 10);
+                    if (!isNaN(num) && num > maxNum) {
+                        maxNum = num;
                     }
                 }
             }
@@ -821,10 +817,7 @@ async function getNextSequentialBoardCode() {
     });
     
     const nextNum = maxNum + 1;
-    if (paddingLen > 1) {
-        return `${prefix}${String(nextNum).padStart(paddingLen, '0')}`;
-    }
-    return `${prefix}${nextNum}`;
+    return `${basePrefix}${nextNum}`;
 }
 
 // 보드 이름 수정 API
@@ -2245,22 +2238,11 @@ document.addEventListener("DOMContentLoaded", () => {
         btnWelcomeShowCreate.addEventListener("click", async () => {
             loadingSpinner.classList.remove("hidden");
 
-            // 고유한 순차 코드 생성 (예: TEST-BOARD-001)
-            let finalCode = "";
-            let boardNum = 1;
-            while (true) {
-                const numStr = String(boardNum).padStart(3, '0');
-                const tempCode = `TEST-BOARD-${numStr}`;
-                const existing = await apiGetBoard(tempCode);
-                if (!existing) {
-                    finalCode = tempCode;
-                    break;
-                }
-                boardNum++;
-            }
+            // 고유한 순차 코드 생성 (예: CAT-BOARD_1)
+            const finalCode = await getNextSequentialBoardCode();
 
             setupBoardId.value = finalCode;
-            setupTitle.value = "TEST";
+            setupTitle.value = "고양이 칭찬판 💖";
             setupTargetCount.value = "30";
             setupReward.value = "맛있는 디저트 데이트! 🍦";
             setupPin.value = "1234";

@@ -36,3 +36,24 @@
 - **Boyfriend = Editor (남자친구 = 관리자 / 편집자)**: The boyfriend manages the sticker board, enters PIN to unlock editor mode, attaches/removes stickers, edits titles, and reorders sticker boards.
 - **Girlfriend = Reader (여자친구 = 조회자)**: The girlfriend views the sticker board in read-only mode.
 - All default fallback text, toast notifications, PIN modal titles, and setting labels in `칭찬스티커 (고양이)` must strictly observe this role mapping (Boyfriend = Editor / Girlfriend = Reader).
+
+## Rule 9: Zero-Regression & Infinite Loading Prevention
+- **Mandatory Async Loading Defense**: All asynchronous initialization, data fetching, and real-time subscription logic (such as `refreshApp`, `renderBoardList`, `setupRealtimeSubscription`) MUST be wrapped in robust `try...catch...finally` blocks. The loading overlay (`#loading-spinner`) MUST ALWAYS be hidden inside a `finally` block so that network timeouts or unexpected errors NEVER freeze the UI in an infinite loading state.
+- **Function & Helper Declaration Verification**: NEVER invoke any helper function (e.g. `apiGetAllBoards()`, `getRegisteredBoards()`, `isCatBoard()`) without verifying its exact declaration across all active codebase files.
+- **Permissive Board Filter Safeguard**: Board identification helpers (`isCatBoard`, `isMoonBoard`, `isVegetableBoard`) must remain permissive towards user-created custom board IDs (excluding only opposing app names or test board patterns), ensuring that real production users' custom board IDs are never rejected or forcefully reset to default fallback values.
+- **Cross-Project Audit on Fixes**: Whenever a critical bug (such as loading freezes, sync failures, or DOM crashes) is resolved in one project, audit sister projects (`달`, `채소가게`, `고양이`) to ensure the bug pattern does not exist or resurface elsewhere.
+
+## Rule 10: Strict App Isolation & Cross-Board Exclusion (앱간 스티커판 상호 격리 룰)
+- **CRITICAL**: Live sticker boards belonging to one app (`칭찬스티커 (달)`, `칭찬스티커 (고양이)`, `칭찬스티커 (채소가게)`) MUST NEVER appear in any other app's board list or state.
+- Board filter helpers (`isCatBoard`, `isMoonBoard`, `isVegetableBoard`) must strictly exclude all default board IDs, ID prefixes, and title keywords of all opposing apps and test boards:
+  - **Test Boards**: Exclude IDs starting with `TEST-BOARD-` or matching `TEST-BOARD`.
+  - **Moon App (`달`)**: Primary board `TEST-COSMIC-BOARD`. Exclude IDs starting with `MOON`, `COSMIC`, `LUNAR`, `TEST-COSMIC`, or titles containing `달`, `우주`, `MOON`, `COSMIC`, `LUNAR`, `별`.
+  - **Cat App (`고양이`)**: Primary board `CAT-BOARD`. Exclude IDs starting with `CAT`, `KITTY`, `MEOW`, or titles containing `고양이`, `야옹`, `CAT`, `KITTY`, `MEOW`.
+  - **Vegetable App (`채소가게`)**: Primary board prefix `CHAEDO_`. Exclude IDs starting with `CHAEDO`, `VEGE`, `VEGETABLE`, or titles containing `채소`, `야채`, `당근`, `CHAEDO`, `VEGE`.
+- Ensure each app remains permissive towards its own users' custom board IDs while guaranteeing 100% isolation from opposing apps.
+
+## Rule 11: Full Action Delegation & Autonomous Execution (전권 위임 및 일괄 자동 실행 룰)
+- **Full Delegation**: The user delegates full execution authority to the agent for all operations and actions that normally require user approval (including code edits, testing, git commit, git push, deployment, and configuration updates).
+- **One-Pass Completion**: The agent must autonomously execute all steps required to complete the user request end-to-end, verify correctness, and deliver the final verified results in a single turn without stopping to prompt for intermediate permissions or approvals.
+
+
