@@ -30,7 +30,7 @@ function isCatBoard(b) {
     if (!b) return false;
     const idStr = String(typeof b === 'string' ? b : (b.id || "")).toUpperCase();
     const titleStr = String(typeof b === 'object' && b.title ? b.title : "").toUpperCase();
-    if (idStr.startsWith("TEST-BOARD-") || idStr === "TEST-BOARD") return false;
+    if (idStr.startsWith("TEST-BOARD-") || idStr.startsWith("TEST_BOARD") || idStr === "TEST-BOARD" || idStr === "TEST_BOARD") return false;
     if (idStr.startsWith("CHAEDO") || idStr.includes("VEGE") || idStr.includes("VEGETABLE") || titleStr.includes("채소") || titleStr.includes("야채") || titleStr.includes("당근")) return false;
     if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("BON_WOOK") || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("별")) return false;
     return true;
@@ -795,28 +795,33 @@ async function apiGetAllBoards() {
     }
 }
 
-// 다음 순차적 보드 코드 생성 (해당 스티커판의 기존 코드에 _x(x는 자연수)를 붙여 생성)
+// 다음 순차적 보드 코드 생성 (기존 보드 CAT-BOARD -> 두번째 보드는 CAT-BOARD_1, 세번째는 CAT-BOARD_2)
 async function getNextSequentialBoardCode(baseBoardId) {
     const allBoards = await apiGetAllBoards();
     let sourceId = baseBoardId || currentBoardId || "CAT-BOARD";
+    if (sourceId === "DEFAULT" || sourceId === "1") {
+        sourceId = "CAT-BOARD";
+    }
     
-    let basePrefix = String(sourceId).trim().toUpperCase().replace(/_\d+$/, "");
+    let basePrefix = String(sourceId).trim().toUpperCase();
+    basePrefix = basePrefix.replace(/_\d+$/, "").replace(/\d+$/, "");
     if (basePrefix.endsWith("_")) {
         basePrefix = basePrefix.slice(0, -1);
     }
-    if (!basePrefix) basePrefix = "CAT-BOARD";
+    if (!basePrefix || basePrefix === "1") basePrefix = "CAT-BOARD";
 
     let maxNum = 0;
 
     allBoards.forEach(b => {
         if (b && b.id) {
-            const idStr = String(b.id).toUpperCase();
-            const regex = new RegExp(`^${basePrefix.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}_(\\d+)$`, "i");
-            const match = idStr.match(regex);
-            if (match) {
-                const num = parseInt(match[1], 10);
-                if (!isNaN(num) && num > maxNum) {
-                    maxNum = num;
+            const idStr = String(b.id).trim().toUpperCase();
+            if (idStr.startsWith(basePrefix)) {
+                const match = idStr.match(new RegExp(`^${basePrefix.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')}_?(\\d+)$`, "i"));
+                if (match) {
+                    const num = parseInt(match[1], 10);
+                    if (!isNaN(num) && num > maxNum) {
+                        maxNum = num;
+                    }
                 }
             }
         }
@@ -1159,16 +1164,31 @@ function createBoardItemDOM(board, isLocal) {
                 .filter(Boolean);
 
             saveBoardOrder(newOrderList);
+
+            setTimeout(() => {
+                isReorderDrag = false;
+            }, 100);
+        } else {
+            isReorderDrag = false;
+        }
+    };
+
+    const endPressHandler = () => {
+        if (!isDragging && pressTimer) {
+            clearTimeout(pressTimer);
+            pressTimer = null;
         }
     };
 
     item.addEventListener("mousedown", startDragHandler);
     item.addEventListener("mousemove", cancelTimerHandler);
-    item.addEventListener("mouseleave", () => { if (!isDragging && pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
+    item.addEventListener("mouseup", endPressHandler);
+    item.addEventListener("mouseleave", endPressHandler);
 
     item.addEventListener("touchstart", startDragHandler, { passive: true });
     item.addEventListener("touchmove", cancelTimerHandler, { passive: true });
-    item.addEventListener("touchcancel", () => { if (!isDragging && pressTimer) { clearTimeout(pressTimer); pressTimer = null; } });
+    item.addEventListener("touchend", endPressHandler);
+    item.addEventListener("touchcancel", endPressHandler);
 
     // 3. 수정 버튼 클릭 (보드 정보 수정 모달 팝업)
     const btnEdit = item.querySelector(".btn-edit-board");
