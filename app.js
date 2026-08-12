@@ -25,14 +25,21 @@ if (!isLocalMode) {
     console.log("Supabase 설정이 비어있어 '로컬 모드(기기 브라우저 저장)'로 구동됩니다.");
 }
 
-// 고양이 칭찬스티커 전용 보드 판별 (타 앱 보드 및 테스트 보드 자동 제외)
+// 고양이 칭찬스티커 전용 보드 판별 (타 앱 보드 및 테스트 보드 자동 100% 격리)
 function isCatBoard(b) {
     if (!b) return false;
     const idStr = String(typeof b === 'string' ? b : (b.id || "")).toUpperCase();
     const titleStr = String(typeof b === 'object' && b.title ? b.title : "").toUpperCase();
-    if (idStr.startsWith("TEST-BOARD-") || idStr.startsWith("TEST_BOARD") || idStr === "TEST-BOARD" || idStr === "TEST_BOARD") return false;
+    
+    // 1. 테스트 보드 배제 (TEST_BOARD_1, TEST-BOARD-xxx 등)
+    if (idStr.startsWith("TEST-BOARD") || idStr.startsWith("TEST_BOARD") || idStr === "TEST-BOARD" || idStr === "TEST_BOARD") return false;
+    
+    // 2. 채소 보드 배제 (CHAEDO_, VEGE_ 등)
     if (idStr.startsWith("CHAEDO") || idStr.includes("VEGE") || idStr.includes("VEGETABLE") || titleStr.includes("채소") || titleStr.includes("야채") || titleStr.includes("당근")) return false;
-    if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("BON_WOOK") || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("별")) return false;
+    
+    // 3. 달/우주 보드 배제 (TEST-COSMIC-BOARD, BON_WOOK, MOON, COSMIC, LUNAR, STITCH 등)
+    if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("BON_WOOK") || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("MOON") || titleStr.includes("COSMIC") || titleStr.includes("LUNAR") || titleStr.includes("별") || titleStr.includes("스티치")) return false;
+    
     return true;
 }
 
@@ -877,11 +884,15 @@ async function openBoardEditModal(board) {
     }
 }
 
-// 등록된 보드 목록 관리 헬퍼 함수들
+// 등록된 보드 목록 관리 헬퍼 함수들 (타 앱 보드 오염 자동 정화)
 function getRegisteredBoards() {
     const list = localStorage.getItem("registered_boards");
     const parsed = list ? JSON.parse(list) : [];
-    return parsed.filter(b => isCatBoard(b));
+    const filtered = parsed.filter(b => isCatBoard(b));
+    if (parsed.length !== filtered.length) {
+        localStorage.setItem("registered_boards", JSON.stringify(filtered));
+    }
+    return filtered;
 }
 
 function addRegisteredBoard(boardId, title, rewardText) {

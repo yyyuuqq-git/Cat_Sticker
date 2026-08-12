@@ -9,10 +9,12 @@
 - When conducting automated browser tests or manual validation, always create a new temporary test board (following the `TEST_BOARD_x` convention) to perform the tests, or test in a local-only mode that does not sync to the live database if possible.
 - Never alter the state of the live user sticker board.
 
-## Rule 3: Use Test Project for All Testing
-- **CRITICAL**: All browser testing, localhost serving, and automated verification must be performed using the **test project** located at `c:\Users\user\Desktop\칭찬스티커 (테스트)`.
-- Never open localhost from `칭찬스티커 (달)` or `칭찬스티커 (채소가게)`. Always use `칭찬스티커 (테스트)` for local development servers.
-- Never run browser subagent tests or any automated tests against the live deployed sites (`yyyuuqq-git.github.io/sticker/` or `yyyuuqq-git.github.io/Vegetable_Sticker/`). Test exclusively on localhost using the test project.
+## Rule 3: Dedicated Test Infrastructure (테스트 전용 인프라 3종 고정)
+- **CRITICAL / 최중요 명령**: 사용자가 "테스트"를 언급하거나 모든 테스트/검증 작업을 지시할 때, 작업 수행 직전 반드시 아래 **3가지 테스트 전용 인프라**만 연결되어 있는지 사전 검증 및 고정 후 진행해야 한다. 다른 어떠한 라이브/생산용 프로젝트나 DB를 절대 건드리지 마라.
+  1. **로컬 테스트 폴더 (Local Directory)**: `c:\Users\user\Desktop\칭찬스티커 (테스트)`
+  2. **GitHub 테스트 리포지토리 (GitHub Repo)**: `https://github.com/yyyuuqq-git/Test_Sticker.git` (`Test_Sticker`)
+  3. **Supabase 테스트 프로젝트 (Supabase Project)**: `https://uewhzfktonpasqjnlzhm.supabase.co` (`uewhzfktonpasqjnlzhm` / `Test_Sticker`)
+- 로컬 개발 서버 실행, 브라우저 테스트, DB 데이터 생성 등 모든 테스트 작업 수행 직전에 3개 인프라 바인딩 여부를 반드시 확인해야 한다.
 
 ## Rule 4: Target Scope for User Requests (실사용자 vs 특정 프로젝트)
 - **"실사용자" (Production / Real Users)**: When the user mentions "실사용자", apply the changes to ALL production projects (`칭찬스티커 (달)`, `칭찬스티커 (채소가게)`, `칭찬스티커 (고양이)`), while EXCLUDING the test project (`칭찬스티커 (테스트)`).
