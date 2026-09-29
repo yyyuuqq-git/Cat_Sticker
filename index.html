@@ -54,7 +54,7 @@
                 <div class="sidebar-role-area">
                     <button id="btn-toggle-role" class="sidebar-role-btn reader-mode">
                         <span id="role-icon" class="material-icons">visibility</span>
-                        <span id="role-text">여자친구 모드 (조회 전용)</span>
+                        <span id="role-text">남자친구 모드 (조회 전용)</span>
                     </button>
                 </div>
                 <div class="sidebar-actions-right">
@@ -153,7 +153,7 @@
                 <div class="form-group">
                     <label for="setup-pin">편집용 비밀번호 PIN</label>
                     <input type="password" id="setup-pin" placeholder="숫자 4자리 권장">
-                    <small class="helper-text">남자친구가 스티커를 붙일 때 사용할 비밀번호입니다.</small>
+                    <small class="helper-text">여자친구가 스티커를 붙일 때 사용할 비밀번호입니다.</small>
                 </div>
 
                 <button id="btn-setup-submit" class="btn btn-primary" style="margin-top: 12px; width: 100%;">
@@ -203,10 +203,10 @@
 
     <!-- ================= 다이얼로그 모달 ================= -->
 
-    <!-- A. 남자친구 PIN 인증 모달 -->
+    <!-- A. 여자친구 PIN 인증 모달 -->
     <div id="modal-pin" class="modal-overlay hidden">
         <div class="modal-content">
-            <h3 class="modal-title">남자친구 권한 인증</h3>
+            <h3 class="modal-title">여자친구 권한 인증</h3>
             <p class="modal-desc">칭찬스티커를 추가하거나 제거할 수 있는 비밀번호 PIN을 입력하세요.</p>
             <div class="form-group">
                 <input type="password" id="input-pin" placeholder="비밀번호 PIN 입력" maxlength="8">
@@ -264,14 +264,14 @@
                         <input type="password" id="edit-pin" class="editor-only-field" disabled>
                     </div>
                     <div class="form-group">
-                        <label for="edit-reader-name">조회 모드 명칭 (여자친구 모드)</label>
+                        <label for="edit-reader-name">조회 모드 명칭 (남자친구 모드)</label>
                         <input type="text" id="edit-reader-name" class="editor-only-field"
-                            placeholder="기본값: 여자친구 모드 (조회 전용)" disabled>
+                            placeholder="기본값: 남자친구 모드 (조회 전용)" disabled>
                     </div>
                     <div class="form-group">
-                        <label for="edit-editor-name">편집 모드 명칭 (남자친구 모드)</label>
+                        <label for="edit-editor-name">편집 모드 명칭 (여자친구 모드)</label>
                         <input type="text" id="edit-editor-name" class="editor-only-field"
-                            placeholder="기본값: 남자친구 모드 (부착 가능)" disabled>
+                            placeholder="기본값: 여자친구 모드 (부착 가능)" disabled>
                     </div>
                 </div>
             </div>
@@ -422,7 +422,7 @@
     <div id="modal-board-edit" class="modal-overlay hidden">
         <div class="modal-content">
             <h3 class="modal-title">⚙️ 칭찬판 상세 수정</h3>
-            <p class="modal-desc">칭찬판의 제목, 목표 개수, 보상을 수정합니다. <span class="badge-lock">(남자친구 권한 필요)</span></p>
+            <p class="modal-desc">칭찬판의 제목, 목표 개수, 보상을 수정합니다. <span class="badge-lock">(여자친구 권한 필요)</span></p>
 
             <div class="form-group" style="margin-top: 16px;">
                 <label for="edit-board-title">칭찬판 제목</label>

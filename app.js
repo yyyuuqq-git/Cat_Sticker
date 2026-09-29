@@ -253,8 +253,8 @@ async function apiCreateBoard(board) {
                 target_count: board.target_count || 30,
                 reward_text: board.reward_text || "",
                 editor_pin: board.editor_pin || "1234",
-                reader_role_name: board.reader_role_name || "여자친구 모드 (조회 전용)",
-                editor_role_name: board.editor_role_name || "남자친구 모드 (부착 가능)"
+                reader_role_name: board.reader_role_name || "남자친구 모드 (조회 전용)",
+                editor_role_name: board.editor_role_name || "여자친구 모드 (부착 가능)"
             };
             if (board.created_at) {
                 dbBoard.created_at = board.created_at;
@@ -1200,7 +1200,7 @@ function createBoardItemDOM(board, isLocal) {
         pressTimer = setTimeout(() => {
             const canEdit = localStorage.getItem("is_editor") === "true";
             if (!canEdit) {
-                showToast("편집자 권한(남자친구 모드)에서만 스티커판 순서를 변경할 수 있습니다. 🔒");
+                showToast("편집자 권한(여자친구 모드)에서만 스티커판 순서를 변경할 수 있습니다. 🔒");
                 return;
             }
 
@@ -1511,8 +1511,8 @@ async function refreshApp() {
         }
         if (appMainLogo) appMainLogo.textContent = savedAppTitle;
         if (editAppTitle) editAppTitle.value = savedAppTitle;
-        if (editReaderName) editReaderName.value = currentBoard.reader_role_name || "여자친구 모드 (조회 전용)";
-        if (editEditorName) editEditorName.value = currentBoard.editor_role_name || "남자친구 모드 (부착 가능)";
+        if (editReaderName) editReaderName.value = currentBoard.reader_role_name || "남자친구 모드 (조회 전용)";
+        if (editEditorName) editEditorName.value = currentBoard.editor_role_name || "여자친구 모드 (부착 가능)";
         if (editPin) editPin.value = (currentBoard && currentBoard.editor_pin) || localStorage.getItem(`board_pin_${currentBoardId}`) || "1234";
 
         // 컨텐츠 표출
@@ -1640,7 +1640,7 @@ async function handleSlotClick(index, isActive) {
     } else {
         // 빈칸 클릭 시: 편집자만 스티커 선택 & 메모 작성 모달 노출
         if (!isEditorMode) {
-            showToast("스티커 추가는 남자친구(관리자)만 가능해요! 🐟");
+            showToast("스티커 추가는 여자친구(관리자)만 가능해요! 🐟");
             return;
         }
         memoTargetIndex = index;
@@ -1659,7 +1659,7 @@ async function handleSlotLongPress(index, isActive) {
     if (!isActive) return; // 빈칸은 롱프레스 무시
 
     if (!isEditorMode) {
-        showToast("스티커 제거는 남자친구(관리자)만 가능해요! 🐟");
+        showToast("스티커 제거는 여자친구(관리자)만 가능해요! 🐟");
         return;
     }
 
@@ -1678,7 +1678,7 @@ function updateRoleUI() {
     if (isEditorMode) {
         if (btnToggleRole) btnToggleRole.className = "sidebar-role-btn editor-mode";
         if (roleIcon) roleIcon.textContent = "edit";
-        if (roleText) roleText.textContent = globalEditorName || (currentBoard && currentBoard.editor_role_name) || "남자친구 모드 (부착 가능)";
+        if (roleText) roleText.textContent = globalEditorName || (currentBoard && currentBoard.editor_role_name) || "여자친구 모드 (부착 가능)";
 
         // 설정 모달 내 필드 활성화
         document.querySelectorAll(".editor-only-field").forEach(el => el.disabled = false);
@@ -1686,7 +1686,7 @@ function updateRoleUI() {
     } else {
         if (btnToggleRole) btnToggleRole.className = "sidebar-role-btn reader-mode";
         if (roleIcon) roleIcon.textContent = "visibility";
-        if (roleText) roleText.textContent = globalReaderName || (currentBoard && currentBoard.reader_role_name) || "여자친구 모드 (조회 전용)";
+        if (roleText) roleText.textContent = globalReaderName || (currentBoard && currentBoard.reader_role_name) || "남자친구 모드 (조회 전용)";
 
         // 설정 모달 내 필드 비활성화
         document.querySelectorAll(".editor-only-field").forEach(el => el.disabled = true);
@@ -1727,7 +1727,7 @@ btnPinSubmit.addEventListener("click", () => {
         modalPin.classList.add("hidden");
         updateRoleUI();
         refreshApp();
-        showToast("남자친구 편집 권한이 승인되었습니다! 🐟");
+        showToast("여자친구 편집 권한이 승인되었습니다! 🐟");
     } else {
         pinError.classList.remove("hidden");
     }
@@ -1786,8 +1786,8 @@ btnCreateBoard.addEventListener("click", async () => {
         target_count: 30,
         reward_text: "싱싱한 모둠회 세트 먹으러 가기 🐟",
         editor_pin: activePin,
-        reader_role_name: "여자친구 모드 (조회 전용)",
-        editor_role_name: "남자친구 모드 (부착 가능)",
+        reader_role_name: "남자친구 모드 (조회 전용)",
+        editor_role_name: "여자친구 모드 (부착 가능)",
         created_at: new Date().toISOString()
     };
 
@@ -1873,8 +1873,8 @@ btnSettingsSave.addEventListener("click", async () => {
         ...currentBoard,
         app_title: newAppTitle || (currentBoard && currentBoard.app_title) || "수산시장 칭찬나라 🐟",
         editor_pin: newPin || (currentBoard && currentBoard.editor_pin) || "1234",
-        reader_role_name: newReaderName || (currentBoard && currentBoard.reader_role_name) || "여자친구 모드 (조회 전용)",
-        editor_role_name: newEditorName || (currentBoard && currentBoard.editor_role_name) || "남자친구 모드 (부착 가능)"
+        reader_role_name: newReaderName || (currentBoard && currentBoard.reader_role_name) || "남자친구 모드 (조회 전용)",
+        editor_role_name: newEditorName || (currentBoard && currentBoard.editor_role_name) || "여자친구 모드 (부착 가능)"
     };
 
     const success = await apiCreateBoard(updated);

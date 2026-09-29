@@ -33,11 +33,11 @@
 - **Local First & Localhost Verification**: Always apply code modifications to local workspace files first. Perform preview testing on localhost (`http://localhost:...`) so changes can be verified safely without immediately affecting live deployed sites.
 - **Explicit Push / Deployment Request Required**: NEVER commit and push changes to live production GitHub repositories (`main` branch) until local verification is complete AND the user explicitly requests or confirms commit/push deployment.
 
-## Rule 8: Cat Project Role Assignment (고양이 스티커판 전용 역할 지정)
-- **Cat Project Specific**: This rule applies ONLY to `칭찬스티커 (고양이)`.
-- **Boyfriend = Editor (남자친구 = 관리자 / 편집자)**: The boyfriend manages the sticker board, enters PIN to unlock editor mode, attaches/removes stickers, edits titles, and reorders sticker boards.
-- **Girlfriend = Reader (여자친구 = 조회자)**: The girlfriend views the sticker board in read-only mode.
-- All default fallback text, toast notifications, PIN modal titles, and setting labels in `칭찬스티커 (고양이)` must strictly observe this role mapping (Boyfriend = Editor / Girlfriend = Reader).
+## Rule 8: Fish Project Role Assignment (물고기 / Fish_Sticker 스티커판 전용 역할 지정)
+- **Fish Project Specific (물고기)**: This rule applies to `칭찬스티커 (고양이)` / `Fish_Sticker` (물고기).
+- **Girlfriend = Editor (여자친구 = 관리자 / 편집자)**: The girlfriend manages the sticker board, enters PIN to unlock editor mode, attaches/removes stickers, edits titles, and reorders sticker boards.
+- **Boyfriend = Reader (남자친구 = 조회자)**: The boyfriend views the sticker board in read-only mode.
+- All default fallback text, toast notifications, PIN modal titles, and setting labels in `물고기` (`Fish_Sticker`) must strictly observe this role mapping (Girlfriend = Editor / Boyfriend = Reader).
 
 ## Rule 9: Zero-Regression & Infinite Loading Prevention
 - **Mandatory Async Loading Defense**: All asynchronous initialization, data fetching, and real-time subscription logic (such as `refreshApp`, `renderBoardList`, `setupRealtimeSubscription`) MUST be wrapped in robust `try...catch...finally` blocks. The loading overlay (`#loading-spinner`) MUST ALWAYS be hidden inside a `finally` block so that network timeouts or unexpected errors NEVER freeze the UI in an infinite loading state.
