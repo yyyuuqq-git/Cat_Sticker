@@ -478,20 +478,21 @@ async function apiSaveThemeColor(boardId, hex) {
 }
 
 // ==========================================
-// 5. 귀여운 고양이 발바닥(젤리 🐾) 스티커 10종 빌더
+// 5. 수산시장 싱싱 어류 스티커 10종 빌더
 // ==========================================
-const CAT_PAWS = [
-    { id: 0, name: "딸기 핑크 젤리 🍓", emoji: "🐾" },
-    { id: 1, name: "밀크 핑크 젤리 🥛", emoji: "🐾" },
-    { id: 2, name: "체리 블라섬 젤리 🌸", emoji: "🐾" },
-    { id: 3, name: "치즈 냥이 젤리 🧀", emoji: "🐾" },
-    { id: 4, name: "삼색이 냥이 젤리 🐱", emoji: "🐾" },
-    { id: 5, name: "흑임자 핑크 젤리 🖤", emoji: "🐾" },
-    { id: 6, name: "사쿠라 젤리 🌺", emoji: "🐾" },
-    { id: 7, name: "꿀단지 젤리 🍯", emoji: "🐾" },
-    { id: 8, name: "초코 핑크 젤리 🍫", emoji: "🐾" },
-    { id: 9, name: "무지개 젤리 🌈", emoji: "🐾" }
+const STICKER_ITEMS = [
+    { id: 0, name: "은빛 고등어 🐟", desc: "시장 최고 인기! 반짝이는 은빛 고등어" },
+    { id: 1, name: "싱싱 연어 🍣", desc: "입안 가득 살살 녹는 주황빛 싱싱 연어" },
+    { id: 2, name: "방글 복어 🐡", desc: "동글동글 귀엽게 방글거리는 노랑 복어" },
+    { id: 3, name: "황금 참돔 🐠", desc: "바다의 여왕! 행운을 주는 귀한 참돔" },
+    { id: 4, name: "꼬마상어 🦈", desc: "바다를 누비는 씩씩한 귀염둥이 꼬마상어" },
+    { id: 5, name: "은빛 갈치 🐟", desc: "달빛처럼 길고 환하게 빛나는 은빛 갈치" },
+    { id: 6, name: "넙적 광어 🐟", desc: "수산시장 최고 인기 횟감! 눈이 땡글한 넙적 광어" },
+    { id: 7, name: "분홍 꽃새우 🦐", desc: "달콤하고 싱싱한 바다의 보석 꽃새우" },
+    { id: 8, name: "싱싱 오징어 🦑", desc: "쫀득쫀득 맑고 투명한 새벽 활오징어" },
+    { id: 9, name: "바다 고래 🐋", desc: "물뿜으며 큰 꿈을 응원하는 든든한 대왕고래" }
 ];
+const CAT_PAWS = STICKER_ITEMS;
 
 let selectedStickerType = 0;
 
@@ -504,211 +505,314 @@ function parseStickerMemo(rawMemo) {
     return { type: null, memo: rawMemo };
 }
 
-function getCatPawGraphic(type) {
-    switch (type) {
-        case 0: // 🍓 딸기 핑크 젤리
+function getFishMarketGraphic(type) {
+    const safeType = (typeof type === 'number' && type >= 0 && type < 10) ? type : (Math.abs(type || 0) % 10);
+    switch (safeType) {
+        case 0: // 0: 🐟 은빛 고등어 (Fresh Mackerel)
             return `
                 <defs>
-                    <linearGradient id="paw-bg-0" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FFF0F5" />
-                        <stop offset="100%" stop-color="#FCE7F3" />
+                    <linearGradient id="fish-grad-mackerel-back" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#0F4C81"/>
+                        <stop offset="50%" stop-color="#1E3A8A"/>
+                        <stop offset="100%" stop-color="#0284C7"/>
                     </linearGradient>
-                    <radialGradient id="pad-pink-0" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FFB6C1" />
-                        <stop offset="60%" stop-color="#F472B6" />
-                        <stop offset="100%" stop-color="#EC4899" />
-                    </radialGradient>
-                </defs>
-                <circle cx="50" cy="50" r="44" fill="url(#paw-bg-0)" stroke="#FBCFE8" stroke-width="2.5" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-0)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-0)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-0)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-0)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-0)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.65" transform="rotate(-15 46 52)" />
-                <circle cx="40" cy="24" r="2" fill="#FFFFFF" opacity="0.6" />
-            `;
-        case 1: // 🥛 밀크 핑크 젤리
-            return `
-                <defs>
-                    <linearGradient id="paw-bg-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FFFFFF" />
-                        <stop offset="100%" stop-color="#FFF0F5" />
+                    <linearGradient id="fish-grad-mackerel-belly" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#E2E8F0"/>
+                        <stop offset="100%" stop-color="#FFFFFF"/>
                     </linearGradient>
-                    <radialGradient id="pad-pink-1" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FFD1DC" />
-                        <stop offset="70%" stop-color="#FF8DA1" />
-                        <stop offset="100%" stop-color="#F43F5E" />
-                    </radialGradient>
                 </defs>
-                <circle cx="50" cy="50" r="44" fill="url(#paw-bg-1)" stroke="#FFD1DC" stroke-width="2.5" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-1)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-1)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-1)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-1)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-1)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.7" transform="rotate(-15 46 52)" />
+                <circle cx="88" cy="24" r="3" fill="#38BDF8" opacity="0.75"/>
+                <circle cx="82" cy="16" r="2" fill="#7DD3FC" opacity="0.6"/>
+                <path d="M 22 50 L 8 36 C 11 46, 12 54, 8 64 Z" fill="#0284C7" stroke="#0F4C81" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="M 44 32 C 50 22, 62 25, 68 33 Z" fill="#0284C7" stroke="#0F4C81" stroke-width="1.6"/>
+                <path d="M 32 60 C 36 68, 44 67, 48 60 Z" fill="#0284C7" stroke="#0F4C81" stroke-width="1.4"/>
+                <path d="M 20 50 C 22 36, 42 28, 70 34 C 84 38, 92 48, 90 52 C 86 58, 68 70, 42 68 C 28 66, 20 58, 20 50 Z" fill="url(#fish-grad-mackerel-back)" stroke="#0F4C81" stroke-width="2.2" stroke-linejoin="round"/>
+                <path d="M 22 50 C 30 58, 48 67, 72 61 C 82 58, 88 53, 90 52 C 86 58, 68 70, 42 68 C 28 66, 22 56, 22 50 Z" fill="url(#fish-grad-mackerel-belly)"/>
+                <path d="M 40 33 L 42 41 M 48 31 L 49 43 M 56 31 L 55 43 M 64 33 L 62 42 M 72 36 L 69 43" stroke="#0A2540" stroke-width="2.6" stroke-linecap="round"/>
+                <path d="M 74 41 C 72 47, 73 54, 76 58" stroke="#0F4C81" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                <path d="M 64 52 C 58 56, 52 56, 50 52 C 54 50, 60 50, 64 52 Z" fill="#38BDF8" stroke="#0F4C81" stroke-width="1.4"/>
+                <circle cx="80" cy="46" r="4.2" fill="#0F172A"/>
+                <circle cx="81.5" cy="44.5" r="1.6" fill="#FFFFFF"/>
+                <path d="M 88 52 C 86 54, 84 53, 83 52" stroke="#0F4C81" stroke-width="1.6" stroke-linecap="round" fill="none"/>
             `;
-        case 2: // 🌸 체리 블라섬 젤리
+        case 1: // 1: 🍣 싱싱 연어 (Fresh Salmon)
             return `
                 <defs>
-                    <radialGradient id="pad-pink-2" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FF90B3" />
-                        <stop offset="70%" stop-color="#E11D48" />
-                        <stop offset="100%" stop-color="#9F1239" />
-                    </radialGradient>
-                </defs>
-                <circle cx="50" cy="50" r="44" fill="#FFE4E6" stroke="#FDA4AF" stroke-width="2.5" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-2)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-2)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-2)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-2)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-2)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.75" transform="rotate(-15 46 52)" />
-            `;
-        case 3: // 🧀 치즈 냥이 젤리
-            return `
-                <defs>
-                    <radialGradient id="pad-pink-3" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FFA07A" />
-                        <stop offset="70%" stop-color="#FF6B81" />
-                        <stop offset="100%" stop-color="#D93855" />
-                    </radialGradient>
-                </defs>
-                <circle cx="50" cy="50" r="44" fill="#FFEDD5" stroke="#FDBA74" stroke-width="2.5" />
-                <path d="M 20 25 L 30 30 M 16 35 L 26 38" stroke="#FB923C" stroke-width="3.5" stroke-linecap="round" />
-                <path d="M 80 25 L 70 30 M 84 35 L 74 38" stroke="#FB923C" stroke-width="3.5" stroke-linecap="round" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-3)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-3)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-3)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-3)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-3)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.7" transform="rotate(-15 46 52)" />
-            `;
-        case 4: // 🐱 삼색이 냥이 젤리
-            return `
-                <defs>
-                    <radialGradient id="pad-pink-4" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FFB6C1" />
-                        <stop offset="70%" stop-color="#F472B6" />
-                        <stop offset="100%" stop-color="#BE185D" />
-                    </radialGradient>
-                </defs>
-                <circle cx="50" cy="50" r="44" fill="#FAFAF9" stroke="#E7E5E4" stroke-width="2.5" />
-                <path d="M 16 30 C 24 16 40 20 32 40 C 20 44 12 36 16 30 Z" fill="#F97316" opacity="0.85" />
-                <path d="M 82 30 C 70 16 60 28 68 40 C 80 44 88 34 82 30 Z" fill="#44403C" opacity="0.85" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-4)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-4)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-4)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-4)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-4)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.75" transform="rotate(-15 46 52)" />
-            `;
-        case 5: // 🖤 흑임자 핑크 젤리
-            return `
-                <defs>
-                    <radialGradient id="pad-pink-5" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FF66B2" />
-                        <stop offset="70%" stop-color="#FF1A8C" />
-                        <stop offset="100%" stop-color="#B30059" />
-                    </radialGradient>
-                </defs>
-                <circle cx="50" cy="50" r="44" fill="#292524" stroke="#44403C" stroke-width="2.5" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-5)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-5)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-5)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-5)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-5)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-15 46 52)" />
-            `;
-        case 6: // 🌺 사쿠라 젤리
-            return `
-                <defs>
-                    <radialGradient id="pad-pink-6" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FFC2D1" />
-                        <stop offset="70%" stop-color="#FF70A6" />
-                        <stop offset="100%" stop-color="#D81B60" />
-                    </radialGradient>
-                </defs>
-                <circle cx="50" cy="50" r="44" fill="#FCE7F3" stroke="#F472B6" stroke-width="2.5" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-6)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-6)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-6)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-6)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-6)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.75" transform="rotate(-15 46 52)" />
-            `;
-        case 7: // 🍯 꿀단지 젤리
-            return `
-                <defs>
-                    <radialGradient id="pad-pink-7" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FFB3BA" />
-                        <stop offset="70%" stop-color="#FF5C8A" />
-                        <stop offset="100%" stop-color="#C70039" />
-                    </radialGradient>
-                </defs>
-                <circle cx="50" cy="50" r="44" fill="#FEF3C7" stroke="#FDE047" stroke-width="2.5" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-7)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-7)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-7)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-7)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-7)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.7" transform="rotate(-15 46 52)" />
-            `;
-        case 8: // 🍫 초코 핑크 젤리
-            return `
-                <defs>
-                    <radialGradient id="pad-pink-8" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FF85A2" />
-                        <stop offset="70%" stop-color="#FF477E" />
-                        <stop offset="100%" stop-color="#A61C41" />
-                    </radialGradient>
-                </defs>
-                <circle cx="50" cy="50" r="44" fill="#78350F" stroke="#92400E" stroke-width="2.5" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-8)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-8)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-8)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-8)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-8)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-15 46 52)" />
-            `;
-        case 9: // 🌈 무지개 젤리
-            return `
-                <defs>
-                    <linearGradient id="paw-bg-9" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#FFD1DC" />
-                        <stop offset="50%" stop-color="#E0F2FE" />
-                        <stop offset="100%" stop-color="#F3E8FF" />
+                    <linearGradient id="fish-grad-salmon" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FF5A36"/>
+                        <stop offset="60%" stop-color="#FF7A59"/>
+                        <stop offset="100%" stop-color="#FFA07A"/>
                     </linearGradient>
-                    <radialGradient id="pad-pink-9" cx="35%" cy="35%" r="65%">
-                        <stop offset="0%" stop-color="#FFA6C9" />
-                        <stop offset="70%" stop-color="#F472B6" />
-                        <stop offset="100%" stop-color="#C084FC" />
+                </defs>
+                <circle cx="16" cy="22" r="3.2" fill="#38BDF8" opacity="0.8"/>
+                <circle cx="24" cy="15" r="2.2" fill="#7DD3FC" opacity="0.7"/>
+                <path d="M 24 64 C 14 74, 8 84, 10 90 C 18 86, 22 78, 25 74 C 28 80, 32 86, 38 88 C 36 80, 30 72, 26 66 Z" fill="#FF5A36" stroke="#C2410C" stroke-width="2"/>
+                <path d="M 46 25 C 52 18, 62 20, 66 28 Z" fill="#EA580C" stroke="#C2410C" stroke-width="1.8"/>
+                <path d="M 60 68 C 58 76, 52 78, 48 72 Z" fill="#FF7A59" stroke="#C2410C" stroke-width="1.6"/>
+                <path d="M 24 66 C 22 52, 34 32, 54 26 C 72 20, 88 28, 92 40 C 94 52, 82 66, 62 68 C 42 70, 28 72, 24 66 Z" fill="url(#fish-grad-salmon)" stroke="#C2410C" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M 40 38 Q 48 48 42 62" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+                <path d="M 50 32 Q 59 44 54 60" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+                <path d="M 62 30 Q 71 42 66 58" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9"/>
+                <path d="M 74 32 Q 80 40 76 52" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.85"/>
+                <path d="M 72 50 C 66 58, 58 56, 56 50 C 62 48, 68 47, 72 50 Z" fill="#FF9E80" stroke="#C2410C" stroke-width="1.6"/>
+                <path d="M 80 38 C 76 44, 77 52, 81 56" stroke="#C2410C" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                <circle cx="85" cy="40" r="4" fill="#1C1917"/>
+                <circle cx="86.5" cy="38.5" r="1.6" fill="#FFFFFF"/>
+                <path d="M 91 46 C 89 48, 87 47, 86 46" stroke="#9A3412" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            `;
+        case 2: // 2: 🐡 방글 노랑 복어 (Chubby Pufferfish)
+            return `
+                <defs>
+                    <radialGradient id="fish-grad-puffer" cx="45%" cy="40%" r="60%">
+                        <stop offset="0%" stop-color="#FEF08A"/>
+                        <stop offset="55%" stop-color="#FACC15"/>
+                        <stop offset="100%" stop-color="#EAB308"/>
                     </radialGradient>
                 </defs>
-                <circle cx="50" cy="50" r="44" fill="url(#paw-bg-9)" stroke="#FBCFE8" stroke-width="2.5" />
-                <ellipse cx="27" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-9)" transform="rotate(-22 27 38)" />
-                <ellipse cx="42" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-9)" transform="rotate(-7 42 27)" />
-                <ellipse cx="58" cy="27" rx="8" ry="10.5" fill="url(#pad-pink-9)" transform="rotate(7 58 27)" />
-                <ellipse cx="73" cy="38" rx="7.5" ry="9.5" fill="url(#pad-pink-9)" transform="rotate(22 73 38)" />
-                <path d="M 32 58 C 30 46 42 42 50 48 C 58 42 70 46 68 58 C 66 70 58 74 50 72 C 42 74 34 70 32 58 Z" fill="url(#pad-pink-9)" />
-                <ellipse cx="46" cy="52" rx="4" ry="2" fill="#FFFFFF" opacity="0.8" transform="rotate(-15 46 52)" />
+                <circle cx="86" cy="30" r="4" fill="#38BDF8" opacity="0.8"/>
+                <circle cx="91" cy="20" r="2.5" fill="#7DD3FC" opacity="0.7"/>
+                <circle cx="82" cy="14" r="2" fill="#BAE6FD" opacity="0.6"/>
+                <path d="M 18 50 C 8 42, 6 58, 18 54 Z" fill="#FBBF24" stroke="#CA8A04" stroke-width="2"/>
+                <path d="M 40 18 C 45 12, 53 14, 52 20 Z" fill="#38BDF8" stroke="#0284C7" stroke-width="1.8"/>
+                <path d="M 42 82 C 46 88, 54 86, 52 80 Z" fill="#FBBF24" stroke="#CA8A04" stroke-width="1.8"/>
+                <ellipse cx="48" cy="50" rx="36" ry="34" fill="url(#fish-grad-puffer)" stroke="#CA8A04" stroke-width="2.6"/>
+                <path d="M 22 40 C 26 24, 44 20, 68 24 C 54 28, 36 34, 22 40 Z" fill="#38BDF8" opacity="0.85"/>
+                <circle cx="36" cy="26" r="2.2" fill="#0284C7"/>
+                <circle cx="48" cy="27" r="2.5" fill="#0284C7"/>
+                <circle cx="58" cy="30" r="2" fill="#0284C7"/>
+                <path d="M 22 50 L 16 50 M 26 68 L 22 72 M 36 82 L 34 87 M 60 82 L 62 87 M 70 70 L 75 74 M 26 32 L 22 28 M 38 18 L 36 13 M 60 18 L 62 13" stroke="#CA8A04" stroke-width="2.4" stroke-linecap="round"/>
+                <ellipse cx="64" cy="58" rx="6" ry="4" fill="#F43F5E" opacity="0.6"/>
+                <path d="M 42 54 C 36 50, 34 62, 42 60 Z" fill="#FDE047" stroke="#CA8A04" stroke-width="1.8"/>
+                <circle cx="66" cy="44" r="5.5" fill="#1E293B"/>
+                <circle cx="68" cy="42" r="2" fill="#FFFFFF"/>
+                <circle cx="64.5" cy="46" r="1" fill="#FFFFFF"/>
+                <ellipse cx="82" cy="50" rx="3.5" ry="4" fill="#EF4444" stroke="#B91C1C" stroke-width="1.6"/>
+            `;
+        case 3: // 3: 🐠 황금 참돔 (Red Sea Bream / Lucky Bream)
+            return `
+                <defs>
+                    <linearGradient id="fish-grad-bream" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#E11D48"/>
+                        <stop offset="60%" stop-color="#F43F5E"/>
+                        <stop offset="100%" stop-color="#FB7185"/>
+                    </linearGradient>
+                </defs>
+                <path d="M 86 22 L 88 16 L 90 22 L 96 24 L 90 26 L 88 32 L 86 26 L 80 24 Z" fill="#FACC15"/>
+                <circle cx="76" cy="18" r="2" fill="#FDE047"/>
+                <path d="M 22 50 L 8 34 C 13 46, 13 54, 8 66 Z" fill="#BE123C" stroke="#9F1239" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M 32 30 L 36 18 L 44 26 L 50 16 L 58 24 L 66 18 L 70 28 Z" fill="#FACC15" stroke="#E11D48" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M 44 68 C 42 78, 52 78, 56 68 Z" fill="#FACC15" stroke="#B45309" stroke-width="1.8"/>
+                <path d="M 20 50 C 22 34, 38 24, 66 26 C 82 28, 92 40, 90 52 C 88 64, 76 72, 54 72 C 34 72, 20 62, 20 50 Z" fill="url(#fish-grad-bream)" stroke="#9F1239" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M 40 40 Q 45 44 50 40 M 52 38 Q 57 42 62 38 M 36 50 Q 42 55 48 50 M 50 48 Q 56 53 62 48 M 42 60 Q 48 65 54 60" stroke="#FDE047" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.9"/>
+                <path d="M 62 50 C 54 58, 46 54, 46 48 C 52 46, 58 46, 62 50 Z" fill="#FBBF24" stroke="#B45309" stroke-width="1.6"/>
+                <path d="M 72 36 C 68 44, 70 54, 74 60" stroke="#9F1239" stroke-width="2" stroke-linecap="round" fill="none"/>
+                <circle cx="78" cy="42" r="5" fill="#FACC15"/>
+                <circle cx="79" cy="42" r="3.4" fill="#0F172A"/>
+                <circle cx="80" cy="40.5" r="1.4" fill="#FFFFFF"/>
+                <path d="M 88 50 C 86 52, 84 51, 83 50" stroke="#9F1239" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            `;
+        case 4: // 4: 🦈 귀요미 꼬마상어 (Friendly Baby Shark)
+            return `
+                <defs>
+                    <linearGradient id="fish-grad-shark" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#0284C7"/>
+                        <stop offset="65%" stop-color="#38BDF8"/>
+                        <stop offset="100%" stop-color="#7DD3FC"/>
+                    </linearGradient>
+                </defs>
+                <circle cx="20" cy="26" r="3" fill="#38BDF8" opacity="0.8"/>
+                <circle cx="14" cy="34" r="2" fill="#7DD3FC" opacity="0.7"/>
+                <path d="M 22 50 C 14 36, 6 34, 8 44 C 12 50, 16 52, 18 52 C 14 56, 8 62, 10 68 C 14 68, 18 60, 22 52 Z" fill="#0284C7" stroke="#0369A1" stroke-width="2"/>
+                <path d="M 46 32 C 48 14, 58 16, 64 32 Z" fill="#0284C7" stroke="#0369A1" stroke-width="2"/>
+                <path d="M 20 52 C 22 38, 40 30, 68 32 C 84 34, 94 46, 92 54 C 88 64, 68 70, 42 68 C 28 66, 20 60, 20 52 Z" fill="url(#fish-grad-shark)" stroke="#0369A1" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M 22 54 C 32 60, 48 66, 68 62 C 78 60, 86 56, 92 54 C 88 64, 68 70, 42 68 C 28 66, 22 58, 22 54 Z" fill="#FFFFFF"/>
+                <path d="M 52 56 C 46 68, 56 72, 62 60 Z" fill="#0284C7" stroke="#0369A1" stroke-width="1.8"/>
+                <line x1="68" y1="44" x2="68" y2="52" stroke="#0369A1" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="72" y1="45" x2="72" y2="51" stroke="#0369A1" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cx="80" cy="44" r="5" fill="#0F172A"/>
+                <circle cx="81.5" cy="42.5" r="2" fill="#FFFFFF"/>
+                <path d="M 80 54 Q 85 62 90 54 Z" fill="#FFFFFF" stroke="#0369A1" stroke-width="1.8" stroke-linejoin="round"/>
+                <polygon points="83,54 85,57 87,54" fill="#FFFFFF" stroke="#0369A1" stroke-width="0.8"/>
+            `;
+        case 5: // 5: 🐟 반짝 은빛 갈치 (Silver Hairtail / Cutlassfish)
+            return `
+                <defs>
+                    <linearGradient id="fish-grad-hairtail" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#E2E8F0"/>
+                        <stop offset="40%" stop-color="#CBD5E1"/>
+                        <stop offset="70%" stop-color="#94A3B8"/>
+                        <stop offset="100%" stop-color="#38BDF8"/>
+                    </linearGradient>
+                </defs>
+                <path d="M 82 18 L 84 12 L 86 18 L 92 20 L 86 22 L 84 28 L 82 22 L 76 20 Z" fill="#38BDF8"/>
+                <path d="M 28 32 L 29 28 L 30 32 L 34 33 L 30 34 L 29 38 L 28 34 L 24 33 Z" fill="#7DD3FC"/>
+                <path d="M 12 76 Q 28 48 48 42 Q 68 36 82 36 L 80 40 Q 66 40 48 46 Q 28 52 14 78 Z" fill="#BAE6FD" opacity="0.85"/>
+                <path d="
+                    M 10 84 
+                    C 20 74, 30 54, 46 48 
+                    C 62 42, 78 40, 92 46 
+                    C 90 52, 76 50, 60 56 
+                    C 44 62, 30 78, 12 86 Z" 
+                    fill="url(#fish-grad-hairtail)" stroke="#475569" stroke-width="2.2" stroke-linejoin="round"/>
+                <path d="M 36 56 Q 54 48 76 46" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.9"/>
+                <path d="M 78 45 C 75 48, 76 52, 78 54" stroke="#475569" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                <circle cx="84" cy="46" r="3.8" fill="#0F172A"/>
+                <circle cx="85.2" cy="45" r="1.4" fill="#FFFFFF"/>
+                <path d="M 92 48 L 88 50" stroke="#334155" stroke-width="1.8" stroke-linecap="round"/>
+            `;
+        case 6: // 6: 🐟 넙적 광어 (Cute Flat Flounder)
+            return `
+                <defs>
+                    <linearGradient id="fish-grad-flounder" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#4F795B"/>
+                        <stop offset="45%" stop-color="#6E9A78"/>
+                        <stop offset="100%" stop-color="#9BC0A4"/>
+                    </linearGradient>
+                    <linearGradient id="fish-grad-flounder-fin" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#A8D5B5"/>
+                        <stop offset="100%" stop-color="#6E9A78"/>
+                    </linearGradient>
+                    <radialGradient id="fish-spot-glow" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#36573F" stop-opacity="0.6"/>
+                        <stop offset="100%" stop-color="#36573F" stop-opacity="0"/>
+                    </radialGradient>
+                </defs>
+                <circle cx="88" cy="22" r="3.5" fill="#38BDF8" opacity="0.8"/>
+                <circle cx="82" cy="14" r="2.2" fill="#7DD3FC" opacity="0.7"/>
+                <circle cx="20" cy="78" r="2.8" fill="#BAE6FD" opacity="0.65"/>
+                <path d="M 18 50 C 6 36, 4 64, 18 50 Z" fill="#6E9A78" stroke="#36573F" stroke-width="2"/>
+                <path d="M 18 50 C 4 34, 4 66, 18 50 Z" fill="url(#fish-grad-flounder-fin)" stroke="#36573F" stroke-width="1.8"/>
+                <path d="M 16 44 L 6 38 M 16 50 L 5 50 M 16 56 L 6 62" stroke="#36573F" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M 28 32 C 34 20, 44 18, 54 22 C 64 20, 74 24, 82 36" fill="url(#fish-grad-flounder-fin)" stroke="#36573F" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="M 36 28 L 38 23 M 46 25 L 48 20 M 56 25 L 58 21 M 66 27 L 68 22 M 76 32 L 78 27" stroke="#36573F" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M 28 68 C 34 80, 44 82, 54 78 C 64 80, 74 76, 82 64" fill="url(#fish-grad-flounder-fin)" stroke="#36573F" stroke-width="1.8" stroke-linejoin="round"/>
+                <path d="M 36 72 L 38 77 M 46 75 L 48 80 M 56 75 L 58 79 M 66 73 L 68 78 M 76 68 L 78 73" stroke="#36573F" stroke-width="1.2" stroke-linecap="round"/>
+                <path d="M 18 50 C 20 32, 42 24, 68 28 C 86 32, 94 44, 92 52 C 90 60, 84 68, 68 72 C 42 76, 20 68, 18 50 Z" fill="url(#fish-grad-flounder)" stroke="#36573F" stroke-width="2.4" stroke-linejoin="round"/>
+                <circle cx="36" cy="46" r="4" fill="url(#fish-spot-glow)"/>
+                <circle cx="48" cy="38" r="5" fill="url(#fish-spot-glow)"/>
+                <circle cx="46" cy="58" r="4.5" fill="url(#fish-spot-glow)"/>
+                <circle cx="60" cy="50" r="5.5" fill="url(#fish-spot-glow)"/>
+                <circle cx="70" cy="62" r="3.5" fill="url(#fish-spot-glow)"/>
+                <circle cx="30" cy="54" r="2.5" fill="#36573F" opacity="0.4"/>
+                <circle cx="56" cy="36" r="2.8" fill="#36573F" opacity="0.4"/>
+                <path d="M 52 54 C 50 63, 58 66, 62 58 C 62 52, 56 50, 52 54 Z" fill="#A8D5B5" stroke="#36573F" stroke-width="1.6"/>
+                <path d="M 54 55 L 59 61" stroke="#36573F" stroke-width="1.2" stroke-linecap="round"/>
+                <ellipse cx="80" cy="57" rx="4.5" ry="3" fill="#F472B6" opacity="0.75"/>
+                <circle cx="74" cy="38" r="6" fill="#FFFFFF" stroke="#36573F" stroke-width="1.6"/>
+                <circle cx="75" cy="38" r="3.8" fill="#14261A"/>
+                <circle cx="76.2" cy="36.5" r="1.5" fill="#FFFFFF"/>
+                <circle cx="83" cy="43" r="6" fill="#FFFFFF" stroke="#36573F" stroke-width="1.6"/>
+                <circle cx="84" cy="43" r="3.8" fill="#14261A"/>
+                <circle cx="85.2" cy="41.5" r="1.5" fill="#FFFFFF"/>
+                <path d="M 91 50 C 89 53, 86 52, 85 50" stroke="#253D2C" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+            `;
+        case 7: // 7: 🦐 탱글 분홍 꽃새우 (Sweet Prawn)
+            return `
+                <defs>
+                    <linearGradient id="fish-grad-shrimp" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#FB7185"/>
+                        <stop offset="50%" stop-color="#F97316"/>
+                        <stop offset="100%" stop-color="#EA580C"/>
+                    </linearGradient>
+                </defs>
+                <path d="M 76 34 C 88 20, 94 14, 96 8" stroke="#F97316" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+                <path d="M 76 36 C 88 30, 96 26, 98 22" stroke="#FB7185" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+                <path d="M 22 72 L 10 82 C 14 76, 16 70, 12 64 Z" fill="#EF4444" stroke="#C2410C" stroke-width="1.8"/>
+                <path d="M 22 72 L 16 86 C 18 80, 22 76, 20 72 Z" fill="#F97316" stroke="#C2410C" stroke-width="1.6"/>
+                <path d="
+                    M 22 72 
+                    C 18 56, 26 36, 44 26 
+                    C 62 16, 76 24, 82 36 
+                    C 84 46, 74 54, 62 52 
+                    C 48 50, 36 58, 30 70 Z" 
+                    fill="url(#fish-grad-shrimp)" stroke="#C2410C" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="M 38 30 Q 48 40 40 50" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.9"/>
+                <path d="M 49 25 Q 58 36 53 49" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.9"/>
+                <path d="M 62 25 Q 70 34 66 46" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.9"/>
+                <path d="M 44 52 L 40 60 M 52 51 L 49 59 M 60 50 L 58 57" stroke="#EA580C" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="76" cy="30" r="4.2" fill="#18181B"/>
+                <circle cx="77.5" cy="28.5" r="1.6" fill="#FFFFFF"/>
+            `;
+        case 8: // 8: 🦑 싱싱 오징어 (Fresh Market Squid)
+            return `
+                <defs>
+                    <linearGradient id="fish-grad-squid" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#FFFFFF"/>
+                        <stop offset="60%" stop-color="#FFE4E6"/>
+                        <stop offset="100%" stop-color="#FDA4AF"/>
+                    </linearGradient>
+                </defs>
+                <polygon points="50,10 24,34 76,34" fill="#FDA4AF" stroke="#E11D48" stroke-width="2.2" stroke-linejoin="round"/>
+                <path d="M 50 12 C 40 26, 32 40, 34 56 C 36 62, 64 62, 66 56 C 68 40, 60 26, 50 12 Z" fill="url(#fish-grad-squid)" stroke="#E11D48" stroke-width="2.4" stroke-linejoin="round"/>
+                <circle cx="44" cy="38" r="2" fill="#FB7185" opacity="0.7"/>
+                <circle cx="54" cy="44" r="2.2" fill="#FB7185" opacity="0.7"/>
+                <circle cx="46" cy="50" r="1.8" fill="#FB7185" opacity="0.7"/>
+                <circle cx="42" cy="58" r="4" fill="#1E293B"/>
+                <circle cx="43.2" cy="56.8" r="1.5" fill="#FFFFFF"/>
+                <circle cx="58" cy="58" r="4" fill="#1E293B"/>
+                <circle cx="59.2" cy="56.8" r="1.5" fill="#FFFFFF"/>
+                <path d="M 38 64 C 36 74, 30 84, 34 88" stroke="#E11D48" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+                <path d="M 44 64 C 44 76, 42 86, 46 90" stroke="#E11D48" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+                <path d="M 56 64 C 56 76, 58 86, 54 90" stroke="#E11D48" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+                <path d="M 62 64 C 64 74, 70 84, 66 88" stroke="#E11D48" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+                <circle cx="46" cy="91" r="2.5" fill="#FB7185"/>
+                <circle cx="54" cy="91" r="2.5" fill="#FB7185"/>
+            `;
+        case 9: // 9: 🐋 푸른 바다 고래 (Blue Ocean Whale)
+            return `
+                <defs>
+                    <linearGradient id="fish-grad-whale" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="#1D4ED8"/>
+                        <stop offset="60%" stop-color="#3B82F6"/>
+                        <stop offset="100%" stop-color="#60A5FA"/>
+                    </linearGradient>
+                </defs>
+                <path d="M 42 32 C 40 18, 28 14, 24 18 C 22 22, 28 26, 34 26" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+                <path d="M 46 30 C 47 14, 58 14, 62 18 C 64 22, 58 26, 52 26" stroke="#38BDF8" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+                <path d="M 44 28 L 44 10" stroke="#38BDF8" stroke-width="2.4" stroke-linecap="round"/>
+                <circle cx="24" cy="14" r="2.5" fill="#7DD3FC"/>
+                <circle cx="62" cy="14" r="2.5" fill="#7DD3FC"/>
+                <circle cx="44" cy="7" r="2" fill="#BAE6FD"/>
+                <path d="M 74 58 C 82 46, 92 46, 94 50 C 92 56, 86 58, 82 58 C 86 60, 92 64, 92 70 C 88 74, 80 70, 74 60 Z" fill="#2563EB" stroke="#1D4ED8" stroke-width="2"/>
+                <path d="
+                    M 14 58 
+                    C 12 44, 26 34, 46 34 
+                    C 64 34, 76 44, 78 56 
+                    C 78 68, 64 76, 46 76 
+                    C 26 76, 14 70, 14 58 Z" 
+                    fill="url(#fish-grad-whale)" stroke="#1E40AF" stroke-width="2.4" stroke-linejoin="round"/>
+                <path d="
+                    M 18 64 
+                    C 28 72, 46 74, 62 68 
+                    C 56 74, 42 76, 28 74 
+                    C 22 72, 18 68, 18 64 Z" 
+                    fill="#F8FAFC" stroke="#93C5FD" stroke-width="1.8"/>
+                <path d="M 36 60 C 36 68, 46 72, 50 68 C 51 64, 46 58, 38 58 Z" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1.8"/>
+                <circle cx="28" cy="52" r="3.8" fill="#0F172A"/>
+                <circle cx="29.2" cy="50.8" r="1.4" fill="#FFFFFF"/>
+                <path d="M 22 58 Q 28 64 34 60" stroke="#1E40AF" stroke-width="2" stroke-linecap="round" fill="none"/>
             `;
         default:
             return "";
     }
 }
 
+// 하위 호환성을 위한 별칭 설정
+const getPencilDoodleGraphic = getFishMarketGraphic;
+const get3DStickerGraphic = getFishMarketGraphic;
+const getCrystalSeaGraphic = getFishMarketGraphic;
+const getCatPawGraphic = getFishMarketGraphic;
+
 function getCatStickerSvg(index, isSticker, rawMemo = "") {
     const parsed = parseStickerMemo(rawMemo);
     const type = (parsed.type !== null && parsed.type >= 0 && parsed.type < 10) ? parsed.type : (index % 10);
-    
+
     if (!isSticker) {
         return "";
     }
     return `
-        <svg viewBox="0 0 100 100" class="cat-sticker-svg active">
-            ${getCatPawGraphic(type)}
+        <svg viewBox="0 0 100 100" class="fish-sticker-svg sea-sticker-svg active">
+            ${getFishMarketGraphic(type)}
         </svg>
     `;
 }
@@ -717,36 +821,36 @@ function renderStickerPickerGrid() {
     const gridContainer = document.getElementById("sticker-select-grid");
     if (!gridContainer) return;
     gridContainer.innerHTML = "";
-    
-    CAT_PAWS.forEach(creature => {
-        const isSel = creature.id === selectedStickerType;
-        const item = document.createElement("div");
-        item.className = `sticker-option-item ${isSel ? "selected" : ""}`;
-        item.dataset.creatureId = creature.id;
-        item.innerHTML = `
+
+    STICKER_ITEMS.forEach(item => {
+        const isSel = item.id === selectedStickerType;
+        const opt = document.createElement("div");
+        opt.className = `sticker-option-item ${isSel ? "selected" : ""}`;
+        opt.dataset.creatureId = item.id;
+        opt.innerHTML = `
             <div class="sticker-option-icon">
-                <svg viewBox="0 0 100 100" style="width:100%; height:100%;">
-                    ${getCatPawGraphic(creature.id)}
+                <svg viewBox="0 0 100 100" class="fish-sticker-svg" style="width:100%; height:100%;">
+                    ${getFishMarketGraphic(item.id)}
                 </svg>
             </div>
-            <span class="sticker-option-label">${creature.name}</span>
+            <span class="sticker-option-label">${item.name}</span>
         `;
-        
+
         const selectHandler = (e) => {
             if (e) e.stopPropagation();
-            selectedStickerType = creature.id;
+            selectedStickerType = item.id;
             gridContainer.querySelectorAll(".sticker-option-item").forEach(el => el.classList.remove("selected"));
-            item.classList.add("selected");
+            opt.classList.add("selected");
         };
 
-        item.addEventListener("click", selectHandler);
-        item.addEventListener("touchstart", selectHandler, { passive: true });
-        
-        gridContainer.appendChild(item);
+        opt.addEventListener("click", selectHandler);
+        opt.addEventListener("touchstart", selectHandler, { passive: true });
+
+        gridContainer.appendChild(opt);
     });
 }
 
-// ==========================================
+
 // 5.5 등록된 보드 목록 관리 및 사이드바 렌더링
 // ==========================================
 
@@ -1328,7 +1432,7 @@ async function refreshApp() {
 
         // 2.5 테마 메타데이터(sticker_index === 999) 감지 및 즉시 적용
         const themeMeta = rawStickers.find(s => s.sticker_index === 999);
-        let activeThemeColor = (currentBoard && currentBoard.theme_color) || localStorage.getItem(`board_theme_color_${currentBoardId}`) || "#EC4899";
+        let activeThemeColor = (currentBoard && currentBoard.theme_color) || localStorage.getItem(`board_theme_color_${currentBoardId}`) || "#0284C7";
         if (themeMeta && themeMeta.memo) {
             const match = themeMeta.memo.match(/\[theme:(#[0-9A-Fa-f]{6})\]/);
             if (match) {
@@ -1396,7 +1500,11 @@ async function refreshApp() {
         }
 
         // 5. 모달 내의 필드 업데이트 (현재 설정 대입)
-        const savedAppTitle = (currentBoard && currentBoard.app_title) || localStorage.getItem(`app_title_${currentBoardId}`) || localStorage.getItem("global_app_title") || "야옹이 칭찬나라 🐾";
+        let savedAppTitle = (currentBoard && currentBoard.app_title) || localStorage.getItem(`app_title_${currentBoardId}`) || localStorage.getItem("global_app_title") || "수산시장 칭찬나라 🐟";
+        if (savedAppTitle.indexOf("야옹이") !== -1) {
+            savedAppTitle = "수산시장 칭찬나라 🐟";
+            localStorage.setItem("global_app_title", savedAppTitle);
+        }
         if (appMainLogo) appMainLogo.textContent = savedAppTitle;
         if (editAppTitle) editAppTitle.value = savedAppTitle;
         if (editReaderName) editReaderName.value = currentBoard.reader_role_name || "여자친구 모드 (조회 전용)";
@@ -1528,7 +1636,7 @@ async function handleSlotClick(index, isActive) {
     } else {
         // 빈칸 클릭 시: 편집자만 스티커 선택 & 메모 작성 모달 노출
         if (!isEditorMode) {
-            showToast("스티커 추가는 남자친구(관리자)만 가능해요! 🐾");
+            showToast("스티커 추가는 남자친구(관리자)만 가능해요! 🐟");
             return;
         }
         memoTargetIndex = index;
@@ -1547,7 +1655,7 @@ async function handleSlotLongPress(index, isActive) {
     if (!isActive) return; // 빈칸은 롱프레스 무시
 
     if (!isEditorMode) {
-        showToast("스티커 제거는 남자친구(관리자)만 가능해요! 🐾");
+        showToast("스티커 제거는 남자친구(관리자)만 가능해요! 🐟");
         return;
     }
 
@@ -1615,7 +1723,7 @@ btnPinSubmit.addEventListener("click", () => {
         modalPin.classList.add("hidden");
         updateRoleUI();
         refreshApp();
-        showToast("남자친구 편집 권한이 승인되었습니다! 🐾");
+        showToast("남자친구 편집 권한이 승인되었습니다! 🐟");
     } else {
         pinError.classList.remove("hidden");
     }
@@ -1657,7 +1765,7 @@ btnShareClose.addEventListener("click", () => {
 // 새로운 칭찬판 생성 (마지막 숫자 + 1 순차적 코드 자동 생성)
 btnCreateBoard.addEventListener("click", async () => {
     const titleVal = inputCreateBoardTitle.value.trim();
-    const finalTitle = titleVal || "야옹이 칭찬판 🐾";
+    const finalTitle = titleVal || "수산시장 칭찬판 🐟";
 
     loadingSpinner.classList.remove("hidden");
     modalShare.classList.add("hidden");
@@ -1665,14 +1773,14 @@ btnCreateBoard.addEventListener("click", async () => {
     // 순차적 보드 코드 생성 (마지막 숫자 + 1, 예: CAT_BOARD_001 -> CAT_BOARD_002)
     const finalCode = await getNextSequentialBoardCode();
 
-    const activeColor = (currentBoard && currentBoard.theme_color) || localStorage.getItem(`board_theme_color_${currentBoardId}`) || "#EC4899";
+    const activeColor = (currentBoard && currentBoard.theme_color) || localStorage.getItem(`board_theme_color_${currentBoardId}`) || "#0284C7";
     const activePin = (currentBoard && currentBoard.editor_pin) || localStorage.getItem(`board_pin_${currentBoardId}`) || "1234";
 
     const newBoard = {
         id: finalCode,
         title: finalTitle,
         target_count: 30,
-        reward_text: "맛있는 츄르 선물하기 🐟",
+        reward_text: "싱싱한 모둠회 세트 먹으러 가기 🐟",
         editor_pin: activePin,
         reader_role_name: "여자친구 모드 (조회 전용)",
         editor_role_name: "남자친구 모드 (부착 가능)",
@@ -1692,7 +1800,7 @@ btnCreateBoard.addEventListener("click", async () => {
         updateRoleUI();
         await refreshApp();
         
-        showToast("새 야옹이 칭찬판이 생성되었습니다! 🐾");
+        showToast("새 수산시장 칭찬판이 생성되었습니다! 🐟");
     } else {
         showToast("칭찬판 개설에 실패했습니다.");
         loadingSpinner.classList.add("hidden");
@@ -1759,7 +1867,7 @@ btnSettingsSave.addEventListener("click", async () => {
 
     const updated = {
         ...currentBoard,
-        app_title: newAppTitle || (currentBoard && currentBoard.app_title) || "야옹이 칭찬나라 🐾",
+        app_title: newAppTitle || (currentBoard && currentBoard.app_title) || "수산시장 칭찬나라 🐟",
         editor_pin: newPin || (currentBoard && currentBoard.editor_pin) || "1234",
         reader_role_name: newReaderName || (currentBoard && currentBoard.reader_role_name) || "여자친구 모드 (조회 전용)",
         editor_role_name: newEditorName || (currentBoard && currentBoard.editor_role_name) || "남자친구 모드 (부착 가능)"
@@ -1964,6 +2072,33 @@ btnMemoEditSave.addEventListener("click", async () => {
         modalMemoView.classList.remove("hidden");
     }
 });
+
+// 모든 모달 배경(바탕/어두운 영역) 클릭 시 모달 닫기 이벤트 핸들러
+document.querySelectorAll(".modal-overlay").forEach(overlay => {
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {
+            overlay.classList.add("hidden");
+            
+            if (overlay.id === "modal-memo-view") {
+                editTargetIndex = null;
+                const memoViewContent = document.querySelector("#modal-memo-view .memo-view-content");
+                if (memoViewContent) memoViewContent.classList.remove("hidden");
+                if (memoEditArea) memoEditArea.classList.add("hidden");
+                if (btnMemoEditCancel) btnMemoEditCancel.classList.add("hidden");
+                if (btnMemoEditSave) btnMemoEditSave.classList.add("hidden");
+                if (btnMemoViewClose) btnMemoViewClose.classList.remove("hidden");
+            } else if (overlay.id === "modal-memo-input") {
+                memoTargetIndex = null;
+            } else if (overlay.id === "modal-delete") {
+                deleteTargetIndex = null;
+                deleteTargetBoardId = null;
+            } else if (overlay.id === "modal-pin") {
+                const pinError = document.getElementById("pin-error");
+                if (pinError) pinError.classList.add("hidden");
+            }
+        }
+    });
+});
 // ==========================================
 // 8.5 RGB 색상 팔레트 및 전역 테마 처리 헬퍼
 // ==========================================
@@ -1992,7 +2127,7 @@ function adjustColorBrightness(hex, percent) {
 }
 
 function updatePaletteUI(hex) {
-    if (!hex) hex = "#EC4899";
+    if (!hex) hex = "#0284C7";
     hex = hex.toUpperCase();
     const { r, g, b } = hexToRgb(hex);
 
@@ -2018,7 +2153,7 @@ function updatePaletteUI(hex) {
 }
 
 function applyThemeColor(hex, save = false) {
-    if (!hex) hex = "#EC4899";
+    if (!hex) hex = "#0284C7";
     hex = hex.toUpperCase();
 
     const darkHex = adjustColorBrightness(hex, -25);
@@ -2056,7 +2191,7 @@ if (btnColorPalette) {
             showToast("테마 색상 변경은 편집자 권한(비밀번호 PIN 인증)이 필요합니다. 🔒");
             return;
         }
-        const savedColor = (currentBoard && currentBoard.theme_color) || localStorage.getItem(`board_theme_color_${currentBoardId}`) || "#EC4899";
+        const savedColor = (currentBoard && currentBoard.theme_color) || localStorage.getItem(`board_theme_color_${currentBoardId}`) || "#0284C7";
         updatePaletteUI(savedColor);
         modalColorPalette.classList.remove("hidden");
     });
@@ -2099,9 +2234,9 @@ if (btnColorReset) {
             showToast("편집 권한이 필요합니다. 🔒");
             return;
         }
-        updatePaletteUI("#EC4899");
-        applyThemeColor("#EC4899", true);
-        showToast("테마 색상이 기본값(#EC4899)으로 초기화되었습니다.");
+        updatePaletteUI("#0284C7");
+        applyThemeColor("#0284C7", true);
+        showToast("테마 색상이 기본값(#0284C7)으로 초기화되었습니다.");
     });
 }
 

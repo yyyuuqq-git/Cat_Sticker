@@ -1,48 +1,62 @@
-/* ==========================================
-   고양이 테마 칭찬나라 전역 CSS 디자인 시스템
+﻿/* ==========================================
+   수산시장 테마 칭찬나라 전역 CSS 디자인 시스템
    ========================================== */
 
 /* 1. 디자인 토큰 및 변수 */
 :root {
-    --stitch-primary: #EC4899; /* lovely pink */
-    --stitch-primary-dark: #BE185D; /* deep pink */
-    --stitch-primary-light: #FFF1F2;
-    --stitch-bg-gradient-start: #FCE7F3;
-    --stitch-bg-gradient-end: #F472B6;
-    --stitch-glow: rgba(236, 72, 153, 0.25);
-    
-    --stitch-light-sky: #FCE7F3; /* soft pink pastel */
-    --stitch-pink: #F472B6; /* bright pink */
-    --stitch-dark: #831843; /* rich rose dark */
-    --stitch-bg-light: #FFF5F7; /* warm cozy pink cream */
+    --stitch-primary: #0284C7;
+    /* vibrant ocean blue */
+    --stitch-primary-dark: #0369A1;
+    /* deep marine navy */
+    --stitch-primary-light: #E0F2FE;
+    /* sea foam light blue */
+    --stitch-bg-gradient-start: #E0F2FE;
+    --stitch-bg-gradient-end: #7DD3FC;
+    --stitch-glow: rgba(2, 132, 199, 0.28);
+
+    --stitch-light-sky: #E0F2FE;
+    --stitch-pink: #38BDF8;
+    --stitch-dark: #0C4A6E;
+    /* deep nautical navy */
+    --stitch-bg-light: #F0F9FF;
+    /* clean fresh sea breeze white */
     --stitch-card-bg: #FFFFFF;
-    
-    --accent-yellow: #F59E0B; /* warm gold */
-    --soft-pink: #FDF2F8;
-    --soft-blue: #FCE7F3;
-    
-    --text-primary: #4C0519;
-    --text-muted: #9D4C6C;
-    --border-color: #FBCFE8;
-    
+
+    --accent-yellow: #F59E0B;
+    --soft-pink: #E0F2FE;
+    --soft-blue: #BAE6FD;
+
+    --text-primary: #082F49;
+    /* deep oceanic navy */
+    --text-muted: #0284C7;
+    --border-color: #BAE6FD;
+
     --font-app: 'Nunito', 'Jua', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 /* 2. 전역 스타일 초기화 & iOS 텍스트 선택 방지 */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    -webkit-tap-highlight-color: transparent; /* 모바일 터치 하이라이트 제거 */
-    -webkit-user-select: none; /* iOS Safari 텍스트 선택 및 드래그 방지 */
+    -webkit-tap-highlight-color: transparent;
+    /* 모바일 터치 하이라이트 제거 */
+    -webkit-user-select: none;
+    /* iOS Safari 텍스트 선택 및 드래그 방지 */
     -moz-user-select: none;
     -ms-user-select: none;
-    user-select: none; /* 텍스트 드래그 선택 방지 */
-    -webkit-touch-callout: none; /* iOS 롱프레스 말풍선/콜아웃 방지 */
+    user-select: none;
+    /* 텍스트 드래그 선택 방지 */
+    -webkit-touch-callout: none;
+    /* iOS 롱프레스 말풍선/콜아웃 방지 */
 }
 
 /* 편집자가 직접 타이핑/입력하는 필드는 정상 텍스트 선택 및 드래그 허용 */
-input, textarea, [contenteditable="true"] {
+input,
+textarea,
+[contenteditable="true"] {
     -webkit-user-select: text !important;
     -moz-user-select: text !important;
     -ms-user-select: text !important;
@@ -73,6 +87,7 @@ body {
     flex-direction: column;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
     position: relative;
+    overflow: hidden;
 }
 
 /* 태블릿 (768px 이상) */
@@ -80,6 +95,7 @@ body {
     body {
         align-items: center;
     }
+
     .app-container {
         max-width: 720px;
         height: 92vh;
@@ -180,8 +196,13 @@ body {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* 7. 역할 배너 (남자친구 / 여자친구 모드) */
@@ -335,8 +356,15 @@ body {
 }
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
 }
 
 .celebration-icon {
@@ -375,7 +403,8 @@ body {
     aspect-ratio: 1;
     border-radius: 12px;
     background-color: transparent;
-    border: 2px dashed #CBD5E0; /* hand-drawn dotted box style */
+    border: 2px dashed #CBD5E0;
+    /* hand-drawn dotted box style */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -393,7 +422,8 @@ body {
 
 .grid-slot.active {
     background-color: transparent;
-    border: 2px dashed transparent; /* hide dotted box when active */
+    border: 2px dashed transparent;
+    /* hide dotted box when active */
 }
 
 .slot-number {
@@ -435,8 +465,15 @@ body {
 }
 
 @keyframes popIn {
-    0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
-    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    0% {
+        transform: scale(0.5) rotate(-10deg);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
 }
 
 /* 12. 다이얼로그 모달 디자인 */
@@ -454,6 +491,7 @@ body {
     z-index: 100;
     opacity: 1;
     transition: opacity 0.3s;
+    cursor: pointer;
 }
 
 .modal-content {
@@ -467,16 +505,24 @@ body {
     flex-direction: column;
     gap: 16px;
     animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    cursor: default;
 }
 
 @keyframes modalPop {
-    0% { transform: scale(0.85); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+    0% {
+        transform: scale(0.85);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 .modal-content.scrollable {
-    max-height: 80%;
-    overflow-y: auto;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
 }
 
 .modal-title {
@@ -806,7 +852,8 @@ input:disabled {
     left: 0;
     width: 280px;
     height: 100vh;
-    height: 100dvh; /* 모바일 주소창 높이를 제외하여 footer가 항상 화면 안에 노출 */
+    height: 100dvh;
+    /* 모바일 주소창 높이를 제외하여 footer가 항상 화면 안에 노출 */
     background-color: var(--stitch-bg-light);
     box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
     z-index: 95;
@@ -836,7 +883,8 @@ input:disabled {
 
 .sidebar-body {
     flex: 1;
-    min-height: 0; /* flexbox 내부 스크롤이 body 안에서만 발생하도록 제한 */
+    min-height: 0;
+    /* flexbox 내부 스크롤이 body 안에서만 발생하도록 제한 */
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -984,7 +1032,8 @@ input:disabled {
 
 /* 사이드바 푸터 영역 (역할 좌측, 공유/설정 우측 하단 배치) */
 .sidebar-footer {
-    flex-shrink: 0; /* 항상 하단에 고정, 축소 방지 */
+    flex-shrink: 0;
+    /* 항상 하단에 고정, 축소 방지 */
     padding: 14px 16px;
     border-top: 1.5px solid var(--border-color);
     background-color: var(--stitch-card-bg);
@@ -1078,10 +1127,12 @@ input:disabled {
 
 /* 태블릿 (768px 이상) */
 @media (min-width: 768px) {
+
     /* 헤더 */
     .app-header {
         padding: 18px 28px;
     }
+
     .logo {
         font-size: 22px;
     }
@@ -1097,18 +1148,23 @@ input:disabled {
         padding: 24px;
         border-radius: 22px;
     }
+
     .board-title {
         font-size: 22px;
     }
+
     .board-code-display {
         font-size: 12px;
     }
+
     .progress-info {
         font-size: 14px;
     }
+
     .progress-bar-container {
         height: 12px;
     }
+
     .reward-text {
         font-size: 14px;
     }
@@ -1117,12 +1173,15 @@ input:disabled {
     .board-grid-card {
         padding: 20px;
     }
+
     .sticker-grid {
         gap: 12px;
     }
+
     .grid-slot {
         border-radius: 14px;
     }
+
     .slot-number {
         font-size: 10px;
     }
@@ -1131,15 +1190,19 @@ input:disabled {
     .sidebar {
         width: 340px;
     }
+
     .sidebar-title {
         font-size: 20px;
     }
+
     .sidebar-body {
         padding: 24px;
     }
+
     .board-item {
         padding: 14px 18px;
     }
+
     .board-item-title {
         font-size: 15px;
         max-width: 220px;
@@ -1151,9 +1214,11 @@ input:disabled {
         padding: 28px;
         border-radius: 26px;
     }
+
     .modal-title {
         font-size: 20px;
     }
+
     .modal-desc {
         font-size: 14px;
     }
@@ -1163,9 +1228,11 @@ input:disabled {
         max-width: 460px;
         padding: 32px;
     }
+
     .welcome-header h2 {
         font-size: 22px;
     }
+
     .welcome-header p {
         font-size: 13px;
     }
@@ -1180,9 +1247,11 @@ input:disabled {
     .celebration-banner {
         padding: 18px;
     }
+
     .celebration-info h3 {
         font-size: 16px;
     }
+
     .celebration-info p {
         font-size: 13px;
     }
@@ -1190,10 +1259,12 @@ input:disabled {
 
 /* 데스크톱 (1024px 이상) */
 @media (min-width: 1024px) {
+
     /* 헤더 */
     .app-header {
         padding: 20px 36px;
     }
+
     .logo {
         font-size: 24px;
     }
@@ -1208,9 +1279,11 @@ input:disabled {
     .summary-card {
         padding: 28px;
     }
+
     .board-title {
         font-size: 24px;
     }
+
     .progress-info {
         font-size: 15px;
     }
@@ -1220,9 +1293,11 @@ input:disabled {
         grid-template-columns: repeat(6, minmax(0, 1fr));
         gap: 14px;
     }
+
     .grid-slot {
         border-radius: 16px;
     }
+
     .slot-number {
         font-size: 11px;
     }
@@ -1231,14 +1306,17 @@ input:disabled {
     .sidebar {
         width: 380px;
     }
+
     .sidebar-body {
         padding: 28px;
         gap: 18px;
     }
+
     .board-item-title {
         font-size: 16px;
         max-width: 260px;
     }
+
     .board-item-code {
         font-size: 11px;
     }
@@ -1254,6 +1332,7 @@ input:disabled {
         max-width: 520px;
         padding: 36px;
     }
+
     .welcome-header h2 {
         font-size: 24px;
     }
@@ -1265,10 +1344,12 @@ input:disabled {
         padding: 14px;
         font-size: 15px;
     }
+
     .memo-textarea {
         padding: 14px;
         font-size: 15px;
     }
+
     .btn {
         padding: 14px 22px;
         font-size: 15px;
@@ -1287,6 +1368,7 @@ input:disabled {
     .app-container {
         max-width: 960px;
     }
+
     .sticker-grid {
         grid-template-columns: repeat(8, minmax(0, 1fr));
         gap: 16px;
@@ -1294,65 +1376,71 @@ input:disabled {
 }
 
 /* ==========================================
-   3D 해양생물 에폭시 스티커 및 선택 팝업 스타일
+   수산시장 어류 스티커 및 선택 팝업 스타일
    ========================================== */
 .sticker-select-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
-    margin: 10px 0;
-    max-height: 220px;
-    overflow-y: auto;
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 8px !important;
+    margin: 10px 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+    flex-shrink: 0 !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
     padding: 6px 4px;
 }
 
 @media (max-width: 480px) {
     .sticker-select-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 6px;
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 6px !important;
     }
 }
 
 .sticker-option-item {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(241, 245, 249, 0.85));
-    border: 2px solid #E2E8F0;
-    border-radius: 14px;
-    padding: 6px 2px;
+    background: #FFFFFF;
+    border: 2px solid #BAE6FD;
+    border-radius: 16px;
+    padding: 8px 2px;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.08);
     user-select: none;
 }
 
 .sticker-option-item:hover {
-    transform: translateY(-2px) scale(1.05);
-    border-color: #818CF8;
+    transform: translateY(-2px) scale(1.06);
+    border-color: #0284C7;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.22);
 }
 
 .sticker-option-item.selected {
-    border: 2.5px solid #6366F1;
-    background: linear-gradient(135deg, #EEF2FF, #E0E7FF);
-    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
-    transform: scale(1.06);
+    border: 2.5px solid #0284C7;
+    background: #E0F2FE;
+    box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    transform: scale(1.08);
 }
 
 .sticker-option-icon {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .sticker-option-label {
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-top: 3px;
+    font-size: 10.5px;
+    font-weight: 800;
+    color: #082F49;
+    margin-top: 4px;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
@@ -1360,21 +1448,38 @@ input:disabled {
     width: 100%;
 }
 
-.sea-sticker-svg {
-    width: 100%;
-    height: 100%;
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+.sea-sticker-svg,
+.cat-sticker-svg,
+.doodle-sticker-svg,
+.fish-sticker-svg,
+.sticker-svg {
+    width: 90%;
+    height: 90%;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+    filter: drop-shadow(0 2px 5px rgba(2, 132, 199, 0.18));
 }
 
-.sea-sticker-svg.active {
-    filter: drop-shadow(0 4px 10px rgba(99, 102, 241, 0.3));
-    animation: jellyPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+.sea-sticker-svg.active,
+.cat-sticker-svg.active,
+.fish-sticker-svg.active,
+.grid-slot.active .sea-sticker-svg,
+.grid-slot.active .fish-sticker-svg,
+.grid-slot.active .cat-sticker-svg {
+    animation: fishStampPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-@keyframes jellyPop {
-    0% { transform: scale(0.6) rotate(-10deg); opacity: 0; }
-    50% { transform: scale(1.15) rotate(5deg); }
+@keyframes fishStampPop {
+    0% { transform: scale(0.35) rotate(-10deg); opacity: 0; }
+    65% { transform: scale(1.15) rotate(3deg); opacity: 1; }
+    85% { transform: scale(0.96) rotate(-1deg); }
     100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+.grid-slot.active:hover .sea-sticker-svg,
+.grid-slot.active:hover .cat-sticker-svg,
+.grid-slot.active:hover .fish-sticker-svg {
+    transform: translateY(-2px) scale(1.08) rotate(2deg);
+    filter: drop-shadow(0 5px 10px rgba(2, 132, 199, 0.28));
 }
 
 /* ==========================================
@@ -1488,9 +1593,17 @@ input:disabled {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.slider-red::-webkit-slider-thumb { background: #EF4444; }
-.slider-green::-webkit-slider-thumb { background: #10B981; }
-.slider-blue::-webkit-slider-thumb { background: #3B82F6; }
+.slider-red::-webkit-slider-thumb {
+    background: #EF4444;
+}
+
+.slider-green::-webkit-slider-thumb {
+    background: #10B981;
+}
+
+.slider-blue::-webkit-slider-thumb {
+    background: #3B82F6;
+}
 
 .color-picker-input-row {
     display: flex;
@@ -1510,3 +1623,198 @@ input:disabled {
     background: none;
 }
 
+/* ==========================================
+ * 19. 실시간 스티커 부착 알림 스타일 & 애니메이션
+ * ========================================== */
+
+.realtime-notification-toast {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: linear-gradient(135deg, #FF6B6B 0%, #EC4899 50%, #8B5CF6 100%);
+    color: white;
+    padding: 14px 22px;
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4), 0 4px 10px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+    opacity: 0;
+    pointer-events: auto;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+}
+
+.realtime-notification-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.realtime-notification-toast .notif-icon {
+    font-size: 24px;
+    animation: notifBounce 1.5s infinite;
+}
+
+.realtime-notification-toast .notif-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.realtime-notification-toast .notif-title {
+    font-weight: bold;
+    font-size: 15px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.realtime-notification-toast .notif-memo {
+    font-size: 12px;
+    opacity: 0.95;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 2px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@keyframes notifBounce {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    25% {
+        transform: translateY(-4px) rotate(-8deg);
+    }
+
+    75% {
+        transform: translateY(-2px) rotate(8deg);
+    }
+}
+
+/* 신규 추가된 스티커 펄스 Glow 애니메이션 */
+@keyframes newStickerGlow {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.8);
+    }
+
+    40% {
+        transform: scale(1.18) rotate(4deg);
+        box-shadow: 0 0 30px 10px rgba(236, 72, 153, 0.9);
+    }
+
+    70% {
+        transform: scale(1.08) rotate(-2deg);
+        box-shadow: 0 0 20px 5px rgba(236, 72, 153, 0.7);
+    }
+
+    100% {
+        transform: scale(1) rotate(0deg);
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0);
+    }
+}
+
+.sticker-cell.newly-added-pulse {
+    animation: newStickerGlow 1.4s ease-in-out 2;
+    z-index: 20 !important;
+    position: relative;
+}
+
+/* ==========================================
+   개인 알림 설정 iOS 힐링 스위치 토글 CSS
+   ========================================== */
+.settings-tab-btn {
+    flex: 1 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 10px 16px !important;
+    border: 0 !important;
+    border-style: none !important;
+    outline: none !important;
+    cursor: pointer !important;
+    background-color: #F3F4F6 !important;
+    color: var(--text-primary, #1F2937) !important;
+    border-radius: 12px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    text-align: center !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+}
+
+.settings-tab-btn.active {
+    background-color: var(--stitch-primary, #EC4899) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25) !important;
+}
+
+.toggle-switch {
+    position: relative !important;
+    display: inline-block !important;
+    width: 52px !important;
+    height: 30px !important;
+    flex-shrink: 0 !important;
+    cursor: pointer !important;
+    vertical-align: middle !important;
+}
+
+.toggle-switch input,
+.toggle-switch input[type="checkbox"] {
+    display: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    pointer-events: none !important;
+}
+
+.toggle-slider {
+    position: absolute !important;
+    cursor: pointer !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: #E5E7EB !important;
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 30px !important;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.toggle-slider:before {
+    position: absolute !important;
+    content: "" !important;
+    height: 24px !important;
+    width: 24px !important;
+    left: 3px !important;
+    bottom: 3px !important;
+    background-color: #ffffff !important;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 50% !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) !important;
+}
+
+.toggle-switch input:checked+.toggle-slider {
+    background-color: var(--stitch-primary, #EC4899) !important;
+}
+
+.toggle-switch input:checked+.toggle-slider:before {
+    transform: translateX(22px) !important;
+}

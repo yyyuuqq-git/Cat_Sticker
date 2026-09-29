@@ -1,29 +1,34 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>야옹이 칭찬나라 🐾</title>
-    
+    <title>수산시장 칭찬나라 🐟</title>
+
     <!-- 모바일 PWA 및 웹앱 전체화면 설정 -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#EC4899">
-    
+    <meta name="theme-color" content="#0284C7">
+
     <!-- 구글 폰트 (귀엽고 둥근 글꼴 Jua & Nunito) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Jua&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
-    
+
     <!-- 머티리얼 아이콘 CDN -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
+
     <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
+    <!-- PWA Web Push Manifest -->
+    <link rel="manifest" href="manifest.json">
+
     <!-- 커스텀 CSS (모바일 캐시 방지) -->
-    <link rel="stylesheet" href="style.css?v=3.3.0-mobile-sync">
+    <link rel="stylesheet" href="style.css?v=3.9.4">
 </head>
+
 <body>
     <div class="app-container">
         <!-- 0. 사이드바 (서랍 메뉴) -->
@@ -35,7 +40,7 @@
                     <span class="material-icons">close</span>
                 </button>
             </div>
-            
+
             <div class="sidebar-body">
                 <div id="board-list" class="board-list">
                     <!-- 자바스크립트로 동적 렌더링 -->
@@ -44,7 +49,7 @@
                     <span class="material-icons">add</span> 새 스티커판 만들기
                 </button>
             </div>
-            
+
             <div class="sidebar-footer">
                 <div class="sidebar-role-area">
                     <button id="btn-toggle-role" class="sidebar-role-btn reader-mode">
@@ -66,9 +71,12 @@
                 <button id="btn-menu" class="icon-button" title="메뉴" style="margin-right: 8px;">
                     <span class="material-icons">menu</span>
                 </button>
-                <h1 id="app-main-logo" class="logo">야옹이 칭찬나라 🐾</h1>
+                <h1 id="app-main-logo" class="logo">수산시장 칭찬나라 🐟</h1>
             </div>
             <div class="header-right">
+                <button id="btn-toggle-notif-sound" class="icon-button" title="실시간 알림 및 효과음 설정">
+                    <span class="material-icons">notifications_active</span>
+                </button>
                 <button id="btn-color-palette" class="icon-button" title="보드 색상 변경">
                     <span class="material-icons">palette</span>
                 </button>
@@ -85,27 +93,30 @@
             <!-- A. 공유코드 입력 접속 화면 -->
             <div id="welcome-connect-card" class="welcome-card">
                 <div class="welcome-header">
-                    <span class="material-icons welcome-logo-icon">pets</span>
-                    <h2>야옹이 칭찬나라 시작하기 🐾</h2>
+                    <span class="material-icons welcome-logo-icon">set_meal</span>
+                    <h2>수산시장 칭찬나라 시작하기 🐟</h2>
                     <p>커플만의 공유 코드를 입력하여 칭찬판에 접속하세요.</p>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="welcome-input-board-id">공유 코드 입력</label>
-                    <input type="text" id="welcome-input-board-id" placeholder="예: TEST-BOARD-1234" style="text-transform: uppercase;">
+                    <input type="text" id="welcome-input-board-id" placeholder="예: TEST_BOARD_1"
+                        style="text-transform: uppercase;">
                 </div>
-                
+
                 <button id="btn-welcome-connect" class="btn btn-primary" style="margin-top: 8px; width: 100%;">
                     칭찬판 접속하기 🚀
                 </button>
-                
-                <div style="text-align: center; margin: 12px 0; color: var(--text-muted); font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+
+                <div
+                    style="text-align: center; margin: 12px 0; color: var(--text-muted); font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 8px;">
                     <span style="flex: 1; height: 1px; background-color: var(--border-color);"></span>
                     <span>또는</span>
                     <span style="flex: 1; height: 1px; background-color: var(--border-color);"></span>
                 </div>
-                
-                <button id="btn-welcome-show-create" class="btn btn-secondary" style="width: 100%; border: 1.5px dashed var(--stitch-primary); background-color: transparent; color: var(--stitch-primary);">
+
+                <button id="btn-welcome-show-create" class="btn btn-secondary"
+                    style="width: 100%; border: 1.5px dashed var(--stitch-primary); background-color: transparent; color: var(--stitch-primary);">
                     새 스티커판 만들기 ✨
                 </button>
             </div>
@@ -117,38 +128,38 @@
                     <h2>새 스티커판 만들기</h2>
                     <p>커플만의 실시간 칭찬판 정보와 비밀번호를 설정해 주세요.</p>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="setup-board-id">공유 코드 (Board Code)</label>
                     <input type="text" id="setup-board-id" style="text-transform: uppercase;">
                     <small class="helper-text">서로 연결할 때 사용하는 코드입니다. (자동 생성됨)</small>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="setup-title">칭찬판 제목</label>
                     <input type="text" id="setup-title" placeholder="예: 민지의 착한 일 판 💖">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="setup-target-count">목표 스티커 개수 (20 ~ 50)</label>
                     <input type="number" id="setup-target-count" value="30" min="1" max="100">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="setup-reward">달성 완료 보상</label>
                     <input type="text" id="setup-reward" placeholder="예: 맛있는 디저트 데이트! 🍦">
                 </div>
-                
+
                 <div class="form-group">
                     <label for="setup-pin">편집용 비밀번호 PIN</label>
                     <input type="password" id="setup-pin" placeholder="숫자 4자리 권장">
                     <small class="helper-text">남자친구가 스티커를 붙일 때 사용할 비밀번호입니다.</small>
                 </div>
-                
+
                 <button id="btn-setup-submit" class="btn btn-primary" style="margin-top: 12px; width: 100%;">
                     칭찬판 만들기 🚀
                 </button>
-                
+
                 <button id="btn-welcome-back" class="btn btn-secondary" style="margin-top: 8px; width: 100%;">
                     이전으로 ↩️
                 </button>
@@ -161,12 +172,12 @@
             <section class="summary-card">
                 <h2 id="board-title" class="board-title">스티치와 함께하는 칭찬판</h2>
                 <div id="board-code-display" class="board-code-display">보상: 없음</div>
-                
+
                 <div class="progress-info">
                     <span class="progress-label">칭찬 스티커 모으기</span>
                     <span id="progress-count" class="progress-count">0 / 30 개</span>
                 </div>
-                
+
                 <div class="progress-bar-container">
                     <div id="progress-bar-fill" class="progress-bar-fill"></div>
                 </div>
@@ -211,41 +222,118 @@
     <!-- B. 칭찬판 설정 및 불러오기 모달 -->
     <div id="modal-settings" class="modal-overlay hidden">
         <div class="modal-content scrollable">
-            <h3 class="modal-title">스티치 칭찬판 설정</h3>
-            
-            <!-- 공유판 불러오기 -->
-            <div class="settings-section">
-                <h4 class="section-title">🔗 공유 스티커판 불러오기</h4>
-                <div class="input-row">
-                    <input type="text" id="input-switch-board" placeholder="불러올 코드 입력" style="text-transform: uppercase;">
-                    <button id="btn-switch-board" class="btn btn-primary btn-sm">이동</button>
+            <h3 class="modal-title">⚙️ 설정 및 환경 구성</h3>
+
+            <!-- 탭 버튼 헤더 -->
+            <div class="settings-tabs"
+                style="display: flex; gap: 10px; margin-top: 10px; margin-bottom: 16px; border-bottom: 2px solid #F3F4F6; padding-bottom: 8px; width: 100%;">
+                <div id="tab-btn-general" class="settings-tab-btn active"
+                    style="flex: 1; padding: 12px 16px; text-align: center; background: var(--stitch-primary, #EC4899); color: #ffffff; border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; transition: all 0.25s ease; box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25); display: flex; align-items: center; justify-content: center;">
+                    ⚙️ 보드/보안 설정
+                </div>
+                <div id="tab-btn-notif" class="settings-tab-btn"
+                    style="flex: 1; padding: 12px 16px; text-align: center; background: #F3F4F6; color: var(--text-primary, #1F2937); border-radius: 12px; font-weight: bold; font-size: 14px; cursor: pointer; transition: all 0.25s ease; display: flex; align-items: center; justify-content: center;">
+                    🔔 개인 알림 설정
                 </div>
             </div>
 
-            <hr class="divider">
+            <!-- [탭 1] 보드 및 보안 설정 -->
+            <div id="tab-content-general" class="settings-tab-content">
+                <!-- 공유판 불러오기 -->
+                <div class="settings-section">
+                    <h4 class="section-title">🔗 공유 스티커판 불러오기</h4>
+                    <div class="input-row">
+                        <input type="text" id="input-switch-board" placeholder="불러올 코드 입력"
+                            style="text-transform: uppercase;">
+                        <button id="btn-switch-board" class="btn btn-primary btn-sm">이동</button>
+                    </div>
+                </div>
 
-            <!-- 현재 칭찬판 수정 (편집 상태일 때만 활성화) -->
-            <div class="settings-section">
-                <h4 class="section-title">⚙️ 칭찬판 보안 및 라벨 설정 <span class="badge-lock">(편집 권한 필요)</span></h4>
-                <div class="form-group">
-                    <label for="edit-app-title">앱 상단 대제목 (메인 타이틀)</label>
-                    <input type="text" id="edit-app-title" class="editor-only-field" placeholder="예: 우주 칭찬나라, 채소가게, 야옹이 칭찬나라" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="edit-pin">편집용 비밀번호 PIN</label>
-                    <input type="password" id="edit-pin" class="editor-only-field" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="edit-reader-name">조회 모드 명칭 (여자친구 모드)</label>
-                    <input type="text" id="edit-reader-name" class="editor-only-field" placeholder="기본값: 여자친구 모드 (조회 전용)" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="edit-editor-name">편집 모드 명칭 (남자친구 모드)</label>
-                    <input type="text" id="edit-editor-name" class="editor-only-field" placeholder="기본값: 남자친구 모드 (부착 가능)" disabled>
+                <hr class="divider">
+
+                <!-- 현재 칭찬판 수정 (편집 상태일 때만 활성화) -->
+                <div class="settings-section">
+                    <h4 class="section-title">⚙️ 칭찬판 보안 및 라벨 설정 <span class="badge-lock">(편집 권한 필요)</span></h4>
+                    <div class="form-group">
+                        <label for="edit-app-title">앱 상단 대제목 (메인 타이틀)</label>
+                        <input type="text" id="edit-app-title" class="editor-only-field"
+                            placeholder="예: 우주 칭찬나라, 채소가게, 야옹이 칭찬나라" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-pin">편집용 비밀번호 PIN</label>
+                        <input type="password" id="edit-pin" class="editor-only-field" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-reader-name">조회 모드 명칭 (여자친구 모드)</label>
+                        <input type="text" id="edit-reader-name" class="editor-only-field"
+                            placeholder="기본값: 여자친구 모드 (조회 전용)" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-editor-name">편집 모드 명칭 (남자친구 모드)</label>
+                        <input type="text" id="edit-editor-name" class="editor-only-field"
+                            placeholder="기본값: 남자친구 모드 (부착 가능)" disabled>
+                    </div>
                 </div>
             </div>
 
-            <div class="modal-actions">
+            <!-- [탭 2] 개인 알림 설정 -->
+            <div id="tab-content-notif" class="settings-tab-content hidden">
+                <div class="settings-section">
+                    <h4 class="section-title">📱 개인 알림 수신 및 환경 설정</h4>
+                    <p style="font-size: 12px; color: #6B7280; margin-bottom: 14px; line-height: 1.4;">
+                        스티커 부착 시 내 스마트폰으로 수신되는 알림, 효과음, 진동을 맞춤 설정합니다.
+                    </p>
+
+                    <!-- 1. 푸시 알림 전체 수신 -->
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #FFF5F8; border-radius: 12px; margin-bottom: 10px; border: 1px solid #FBCFE8;">
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px; color: var(--text-primary);">📱 모바일 푸시 알림 수신
+                            </div>
+                            <div style="font-size: 11px; color: #6B7280;">스마트폰 상단 알림 바 및 백그라운드 푸시</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-setting-push" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- 2. 알림 효과음 소리 -->
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #EFF6FF; border-radius: 12px; margin-bottom: 10px; border: 1px solid #BFDBFE;">
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px; color: var(--text-primary);">🔔 알림 효과음 소리
+                            </div>
+                            <div style="font-size: 11px; color: #6B7280;">스티커 부착 시 맑은 챠임 효과음 소리</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-setting-sound" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- 3. 모바일 진동 -->
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #F0FDF4; border-radius: 12px; margin-bottom: 14px; border: 1px solid #BBF7D0;">
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px; color: var(--text-primary);">📳 스마트폰 진동
+                            </div>
+                            <div style="font-size: 11px; color: #6B7280;">스티커 부착 시 손맛 진동 피드백</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-setting-vibrate" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- 알림 차단 해제 가이드 안내 버튼 -->
+                    <button id="btn-open-notif-guide" class="btn btn-secondary btn-sm" style="width: 100%;">
+                        ❓ 알림이 오지 않나요? (차단 해제 가이드 보기)
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-actions" style="margin-top: 18px;">
                 <button id="btn-settings-close" class="btn btn-secondary">닫기</button>
                 <button id="btn-settings-save" class="btn btn-primary hidden">저장</button>
             </div>
@@ -269,11 +357,11 @@
         <div class="modal-content">
             <h3 class="modal-title">🆕 새 칭찬판 만들기</h3>
             <p class="modal-desc">새로 만들 칭찬판의 이름을 입력해 주세요.</p>
-            
+
             <div class="form-group" style="margin-top: 16px;">
                 <input type="text" id="input-create-board-title" placeholder="칭찬판 이름 (기본값: TEST)">
             </div>
-            
+
             <div class="modal-actions" style="margin-top: 24px;">
                 <button id="btn-share-close" class="btn btn-secondary">닫기</button>
                 <button id="btn-create-board" class="btn btn-primary">생성 및 이동</button>
@@ -281,20 +369,23 @@
         </div>
     </div>
 
-    <!-- E. 3D 해양생물 스티커 선택 & 메모 작성 모달 -->
+    <!-- E. 수산시장 싱싱 어류 스티커 선택 & 메모 작성 모달 -->
     <div id="modal-memo-input" class="modal-overlay hidden">
         <div class="modal-content scrollable" style="max-width: 440px;">
-            <h3 class="modal-title">🌊 3D 해양생물 스티커 선택</h3>
-            <p class="modal-desc">붙이고 싶은 귀여운 해양생물 스티커를 선택해 주세요!</p>
-            
+            <h3 class="modal-title">🐟 싱싱 어류 스티커 선택</h3>
+            <p class="modal-desc">수산시장의 싱싱하고 귀여운 어류 스티커 10종을 골라보세요!</p>
+
             <!-- 스티커 선택 그리드 -->
             <div id="sticker-select-grid" class="sticker-select-grid">
-                <!-- 자바스크립트로 10종 3D 스티커 아이템 동적 생성 -->
+                <!-- 자바스크립트로 10종 어류 스티커 아이템 동적 생성 -->
             </div>
 
             <div class="form-group" style="margin-top: 14px;">
-                <label for="input-sticker-memo" style="font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; display: block;">✍️ 칭찬 한마디 남기기</label>
-                <textarea id="input-sticker-memo" placeholder="예: 오늘도 고생 많았어! 사랑해 💕" rows="2" class="memo-textarea" maxlength="200"></textarea>
+                <label for="input-sticker-memo"
+                    style="font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; display: block;">✍️
+                    칭찬 한마디 남기기</label>
+                <textarea id="input-sticker-memo" placeholder="예: 오늘도 고생 많았어! 사랑해 💕" rows="2" class="memo-textarea"
+                    maxlength="200"></textarea>
             </div>
             <div class="modal-actions" style="margin-top: 16px;">
                 <button id="btn-memo-cancel" class="btn btn-secondary">취소</button>
@@ -332,7 +423,7 @@
         <div class="modal-content">
             <h3 class="modal-title">⚙️ 칭찬판 상세 수정</h3>
             <p class="modal-desc">칭찬판의 제목, 목표 개수, 보상을 수정합니다. <span class="badge-lock">(남자친구 권한 필요)</span></p>
-            
+
             <div class="form-group" style="margin-top: 16px;">
                 <label for="edit-board-title">칭찬판 제목</label>
                 <input type="text" id="edit-board-title" class="editor-only-field" disabled>
@@ -345,7 +436,7 @@
                 <label for="edit-board-reward">달성 완료 보상</label>
                 <input type="text" id="edit-board-reward" class="editor-only-field" disabled>
             </div>
-            
+
             <div class="modal-actions" style="margin-top: 24px;">
                 <button id="btn-board-edit-close" class="btn btn-secondary">닫기</button>
                 <button id="btn-board-edit-save" class="btn btn-primary hidden">저장</button>
@@ -357,36 +448,36 @@
     <div id="modal-color-palette" class="modal-overlay hidden">
         <div class="modal-content" style="max-width: 420px; padding: 22px;">
             <h3 class="modal-title" style="display: flex; align-items: center; gap: 8px;">
-                <span class="material-icons" style="color: var(--stitch-primary, #EC4899);">palette</span> 테마 색상 설정 (RGB
+                <span class="material-icons" style="color: var(--stitch-primary, #0284C7);">palette</span> 테마 색상 설정 (RGB
                 팔레트) <span class="badge-lock">(편집 권한 필요)</span>
             </h3>
             <p class="modal-desc">원하는 RGB 색상을 선택하거나 슬라이더를 조절하여 테마를 꾸며보세요!</p>
 
             <!-- 실시간 색상 미리보기 박스 -->
             <div id="color-preview-box" class="color-preview-box">
-                <span id="color-preview-text" class="color-preview-text">#EC4899</span>
+                <span id="color-preview-text" class="color-preview-text">#0284C7</span>
             </div>
 
             <!-- 1. 추천 대표 프리셋 색상 -->
             <div class="color-preset-section">
                 <label class="section-subtitle">✨ 추천 테마 색상</label>
                 <div class="preset-grid">
-                    <button type="button" class="color-preset-btn" data-color="#EC4899"
-                        style="background-color: #EC4899;" title="러블리 핑크"></button>
-                    <button type="button" class="color-preset-btn" data-color="#4A5568"
-                        style="background-color: #4A5568;" title="클래식 슬레이트"></button>
-                    <button type="button" class="color-preset-btn" data-color="#6B46C1"
-                        style="background-color: #6B46C1;" title="코스믹 퍼플"></button>
+                    <button type="button" class="color-preset-btn" data-color="#0284C7"
+                        style="background-color: #0284C7;" title="오션 블루"></button>
+                    <button type="button" class="color-preset-btn" data-color="#0D9488"
+                        style="background-color: #0D9488;" title="아쿠아 마린"></button>
                     <button type="button" class="color-preset-btn" data-color="#1E3A8A"
-                        style="background-color: #1E3A8A;" title="딥 블루"></button>
-                    <button type="button" class="color-preset-btn" data-color="#065F46"
-                        style="background-color: #065F46;" title="에메랄드 그린"></button>
+                        style="background-color: #1E3A8A;" title="딥 네이비"></button>
+                    <button type="button" class="color-preset-btn" data-color="#475569"
+                        style="background-color: #475569;" title="은빛 고등어"></button>
+                    <button type="button" class="color-preset-btn" data-color="#F97316"
+                        style="background-color: #F97316;" title="생연어 코랄"></button>
+                    <button type="button" class="color-preset-btn" data-color="#06B6D4"
+                        style="background-color: #06B6D4;" title="쿨 민트"></button>
+                    <button type="button" class="color-preset-btn" data-color="#E11D48"
+                        style="background-color: #E11D48;" title="영덕 대게"></button>
                     <button type="button" class="color-preset-btn" data-color="#D97706"
-                        style="background-color: #D97706;" title="웜 오렌지"></button>
-                    <button type="button" class="color-preset-btn" data-color="#BE123C"
-                        style="background-color: #BE123C;" title="로즈 핑크"></button>
-                    <button type="button" class="color-preset-btn" data-color="#3B82F6"
-                        style="background-color: #3B82F6;" title="스카이 블루"></button>
+                        style="background-color: #D97706;" title="항구의 노을"></button>
                 </div>
             </div>
 
@@ -395,28 +486,28 @@
                 <div class="rgb-slider-group">
                     <div class="rgb-slider-label">
                         <span style="color: #EF4444; font-weight: bold;">R</span> (Red)
-                        <span id="val-r" class="rgb-val">236</span>
+                        <span id="val-r" class="rgb-val">2</span>
                     </div>
-                    <input type="range" id="range-r" min="0" max="255" value="236" class="rgb-slider slider-red">
+                    <input type="range" id="range-r" min="0" max="255" value="2" class="rgb-slider slider-red">
                 </div>
                 <div class="rgb-slider-group">
                     <div class="rgb-slider-label">
                         <span style="color: #10B981; font-weight: bold;">G</span> (Green)
-                        <span id="val-g" class="rgb-val">72</span>
+                        <span id="val-g" class="rgb-val">132</span>
                     </div>
-                    <input type="range" id="range-g" min="0" max="255" value="72" class="rgb-slider slider-green">
+                    <input type="range" id="range-g" min="0" max="255" value="132" class="rgb-slider slider-green">
                 </div>
                 <div class="rgb-slider-group">
                     <div class="rgb-slider-label">
                         <span style="color: #3B82F6; font-weight: bold;">B</span> (Blue)
-                        <span id="val-b" class="rgb-val">153</span>
+                        <span id="val-b" class="rgb-val">199</span>
                     </div>
-                    <input type="range" id="range-b" min="0" max="255" value="153" class="rgb-slider slider-blue">
+                    <input type="range" id="range-b" min="0" max="255" value="199" class="rgb-slider slider-blue">
                 </div>
                 <div class="color-picker-input-row">
                     <label for="input-custom-color"
                         style="font-size: 13px; font-weight: bold; color: var(--text-primary);">🎨 직접 선택:</label>
-                    <input type="color" id="input-custom-color" value="#EC4899" class="color-input-field">
+                    <input type="color" id="input-custom-color" value="#0284C7" class="color-input-field">
                 </div>
             </div>
 
@@ -434,7 +525,67 @@
     <!-- 커스텀 토스트 알림 -->
     <div id="toast" class="toast hidden"></div>
 
+    <!-- 모바일 푸시 알림 차단 해제 안내 모달 -->
+    <div id="modal-notif-help" class="modal-overlay hidden">
+        <div class="modal-card" style="max-width: 400px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header">
+                <span class="material-icons" style="color: #EC4899; font-size: 28px;">notifications_active</span>
+                <h3 style="margin-left: 8px; font-size: 18px;">📱 모바일 알림 '자동으로 차단됨' 해제법</h3>
+            </div>
+            <div class="modal-body"
+                style="font-size: 13px; line-height: 1.6; color: var(--text-primary); margin-top: 10px;">
+
+                <!-- 0. HTTP 비보안 주소 경고 카운터 -->
+                <div id="http-warning-box"
+                    style="background: #FEF2F2; border-radius: 12px; padding: 12px; margin-bottom: 10px; border: 1px solid #FCA5A5;">
+                    <div style="font-weight: bold; color: #DC2626; margin-bottom: 4px;">⚠️ HTTP 비보안 주소로 접속 중입니다</div>
+                    <p style="margin: 0; font-size: 12px; color: #7F1D1D;">
+                        모바일 크롬/사파리는 <b>HTTP(일반 주소)</b>에서 알림을 <b>'자동으로 차단'</b>합니다.<br>
+                        반드시 아래 <b>HTTPS 보안 주소</b>로 접속하셔야 알림을 켤 수 있습니다!
+                    </p>
+                    <a href="https://yyyuuqq-git.github.io/Test_Sticker/" target="_blank" class="btn btn-primary btn-sm"
+                        style="display: block; text-align: center; margin-top: 8px; text-decoration: none; background: #DC2626;">
+                        🔒 HTTPS 보안 주소로 이동하기 🚀
+                    </a>
+                </div>
+
+                <!-- 1. 안드로이드 크롬 OS 레벨 알림 잠금 해제 법 -->
+                <div
+                    style="background: #EFF6FF; border-radius: 12px; padding: 12px; margin-bottom: 10px; border: 1px solid #BFDBFE;">
+                    <div style="font-weight: bold; color: #2563EB; margin-bottom: 4px;">🤖 안드로이드 크롬 '선택/터치 안 됨' 해제 순서
+                    </div>
+                    <div style="font-size: 12px; color: #1E3A8A; line-height: 1.5;">
+                        <b>[원인]</b> 스마트폰 설정에서 <b>Chrome 앱 자체의 알림 권한이 비활성화</b>되어 브라우저 내 선택이 잠긴 상태입니다.<br><br>
+                        <b>[해결 3단계]</b>
+                        <ol style="margin: 4px 0 0 0; padding-left: 18px;">
+                            <li>스마트폰 <b>설정(⚙️) ➔ 애플리케이션 ➔ Chrome</b> 선택</li>
+                            <li><b>'알림'</b> 메뉴 클릭 ➔ <b>'알림 허용' (파란 스위치 켜기)</b></li>
+                            <li>크롬 앱으로 돌아와 주소창 좌측 <b>🔒(자물쇠) ➔ 권한 ➔ 알림 '허용'</b>으로 변경!</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- 2. 아이폰 사파리 해제 법 -->
+                <div
+                    style="background: #FFF5F8; border-radius: 12px; padding: 12px; margin-bottom: 10px; border: 1px solid #FBCFE8;">
+                    <div style="font-weight: bold; color: #EC4899; margin-bottom: 4px;">🍎 아이폰 (iOS Safari) 차단 해제 법
+                    </div>
+                    <p style="margin: 0; font-size: 12px; color: #831843;">
+                        iPhone Safari 브라우저 탭에서는 알림이 기본 차단됩니다.<br>
+                        Safari 하단 <b>공유 버튼(📤) ➔ '홈 화면에 추가'</b>를 눌러 모바일 앱으로 설치(PWA)한 뒤 실행해 주세요!
+                    </p>
+                </div>
+            </div>
+            <div class="modal-actions"
+                style="margin-top: 12px; display: flex; justify-content: space-between; gap: 8px;">
+                <button id="btn-notif-help-close" class="btn btn-secondary" style="flex: 1;">닫기</button>
+                <button id="btn-notif-help-retry" class="btn btn-primary" style="flex: 1.5;">다시 동의 시도 🔔</button>
+            </div>
+        </div>
+    </div>
+
     <!-- 커스텀 JS (모바일 기기 브라우저 캐시 방지) -->
-    <script src="app.js?v=3.3.0-mobile-sync"></script>
+    <script src="app.js?v=3.9.4"></script>
 </body>
+
 </html>
