@@ -1,4 +1,4 @@
-﻿/* ==========================================
+/* ==========================================
    수산시장 테마 칭찬나라 전역 CSS 디자인 시스템
    ========================================== */
 
@@ -66,7 +66,7 @@ textarea,
 
 body {
     font-family: var(--font-app);
-    background: linear-gradient(135deg, var(--stitch-bg-gradient-start, #FCE7F3) 0%, var(--stitch-bg-gradient-end, #F472B6) 100%);
+    background: linear-gradient(135deg, var(--stitch-bg-gradient-start, #E0F2FE) 0%, var(--stitch-bg-gradient-end, #7DD3FC) 100%);
     color: var(--text-primary);
     display: flex;
     justify-content: center;
@@ -1541,14 +1541,14 @@ input:disabled {
 
 .color-preset-btn.active {
     border-color: #FFFFFF;
-    outline: 2px solid var(--stitch-primary, #EC4899);
+    outline: 2px solid var(--stitch-primary, #0284C7);
 }
 
 .rgb-controls-section {
-    background-color: var(--stitch-bg-light, #FFF5F7);
+    background-color: var(--stitch-bg-light, #F0F9FF);
     padding: 14px;
     border-radius: 14px;
-    border: 1px solid var(--border-color, #FBCFE8);
+    border: 1px solid var(--border-color, #BAE6FD);
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -1756,9 +1756,9 @@ input:disabled {
 }
 
 .settings-tab-btn.active {
-    background-color: var(--stitch-primary, #EC4899) !important;
+    background-color: var(--stitch-primary, #0284C7) !important;
     color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25) !important;
 }
 
 .toggle-switch {
@@ -1812,7 +1812,7 @@ input:disabled {
 }
 
 .toggle-switch input:checked+.toggle-slider {
-    background-color: var(--stitch-primary, #EC4899) !important;
+    background-color: var(--stitch-primary, #0284C7) !important;
 }
 
 .toggle-switch input:checked+.toggle-slider:before {

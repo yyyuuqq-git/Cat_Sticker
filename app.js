@@ -25,8 +25,8 @@ if (!isLocalMode) {
     console.log("Supabase 설정이 비어있어 '로컬 모드(기기 브라우저 저장)'로 구동됩니다.");
 }
 
-// 고양이 칭찬스티커 전용 보드 판별 (타 앱 보드 및 테스트 보드 자동 100% 격리)
-function isCatBoard(b) {
+// 수산시장 칭찬스티커 전용 보드 판별 (타 앱 보드 및 테스트 보드 자동 100% 격리)
+function isFishBoard(b) {
     if (!b) return false;
     const idStr = String(typeof b === 'string' ? b : (b.id || "")).toUpperCase();
     const titleStr = String(typeof b === 'object' && b.title ? b.title : "").toUpperCase();
@@ -38,17 +38,21 @@ function isCatBoard(b) {
     if (idStr.startsWith("CHAEDO") || idStr.includes("VEGE") || idStr.includes("VEGETABLE") || titleStr.includes("채소") || titleStr.includes("야채") || titleStr.includes("당근")) return false;
     
     // 3. 달/우주 보드 배제 (TEST-COSMIC-BOARD, BON_WOOK, MOON, COSMIC, LUNAR, STITCH 등)
-    if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("BON_WOOK") || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("MOON") || titleStr.includes("COSMIC") || titleStr.includes("LUNAR") || titleStr.includes("별") || titleStr.includes("스티치")) return false;
+    if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("BON_WOOK") || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("MOON") || titleStr.includes("COSMIC") || titleStr.includes("LUNAR") || titleStr.includes("별") || titleStr.includes("스티치") || titleStr.includes("업보")) return false;
+    
+    // 4. 고양이 보드 배제 (CAT-BOARD, 1, KITTY, MEOW, 고양이, 욱이 칭찬 스티커판 등)
+    if (idStr === "CAT-BOARD" || idStr === "1" || idStr.startsWith("CAT") || idStr.includes("KITTY") || idStr.includes("MEOW") || titleStr.includes("고양이") || titleStr.includes("야옹") || titleStr.includes("욱이 칭찬")) return false;
     
     return true;
 }
+const isCatBoard = isFishBoard; // 하위 호환성 유지
 
 let initialBoardId = localStorage.getItem("current_board_id");
-if (initialBoardId && !isCatBoard(initialBoardId)) {
-    initialBoardId = "CAT-BOARD";
+if (!initialBoardId || !isFishBoard(initialBoardId) || initialBoardId === "CAT-BOARD" || initialBoardId === "1" || initialBoardId.startsWith("TEST")) {
+    initialBoardId = "FISH-BOARD";
     localStorage.setItem("current_board_id", initialBoardId);
 }
-let currentBoardId = initialBoardId || "CAT-BOARD";
+let currentBoardId = initialBoardId || "FISH-BOARD";
 let currentBoard = null;
 let currentStickers = [];
 let isEditorMode = localStorage.getItem("is_editor") === "true";
@@ -211,7 +215,7 @@ async function apiGetBoard(boardId) {
     }
 }
 
-// 모든 고양이 보드 가져오기
+// 모든 어류 보드 가져오기
 async function apiGetAllBoards() {
     if (isLocalMode || !supabaseClient) {
         return getRegisteredBoards();
@@ -854,7 +858,7 @@ function renderStickerPickerGrid() {
 // 5.5 등록된 보드 목록 관리 및 사이드바 렌더링
 // ==========================================
 
-// 모든 스티커판 목록 조회 (서버 및 로컬 - 고양이 칭찬스티커 보드만 반환)
+// 모든 스티커판 목록 조회 (서버 및 로컬 - 수산시장 어류 칭찬스티커 보드만 반환)
 async function apiGetAllBoards() {
     if (isLocalMode || !supabaseClient) {
         // 로컬스토리지 전체 키 순회
@@ -906,12 +910,12 @@ async function apiGetAllBoards() {
     }
 }
 
-// 다음 순차적 보드 코드 생성 (기존 보드 CAT-BOARD -> 두번째 보드는 CAT-BOARD_1, 세번째는 CAT-BOARD_2)
+// 다음 순차적 보드 코드 생성 (기존 보드 FISH-BOARD -> 두번째 보드는 FISH-BOARD_1, 세번째는 FISH-BOARD_2)
 async function getNextSequentialBoardCode(baseBoardId) {
     const allBoards = await apiGetAllBoards();
-    let sourceId = baseBoardId || currentBoardId || "CAT-BOARD";
-    if (sourceId === "DEFAULT" || sourceId === "1") {
-        sourceId = "CAT-BOARD";
+    let sourceId = baseBoardId || currentBoardId || "FISH-BOARD";
+    if (sourceId === "DEFAULT" || sourceId === "1" || sourceId === "CAT-BOARD" || sourceId.startsWith("TEST")) {
+        sourceId = "FISH-BOARD";
     }
     
     let basePrefix = String(sourceId).trim().toUpperCase();
@@ -919,7 +923,7 @@ async function getNextSequentialBoardCode(baseBoardId) {
     if (basePrefix.endsWith("_")) {
         basePrefix = basePrefix.slice(0, -1);
     }
-    if (!basePrefix || basePrefix === "1") basePrefix = "CAT-BOARD";
+    if (!basePrefix || basePrefix === "1" || basePrefix === "CAT-BOARD") basePrefix = "FISH-BOARD";
 
     let maxNum = 0;
 
@@ -1384,10 +1388,10 @@ async function refreshApp() {
         // 1. 보드 정보 로드
         let board = await apiGetBoard(currentBoardId);
         if (!board) {
-            // 요청한 currentBoardId가 DB에 없는 경우, 고양이 보드 전체 목록 중 첫 번째 보드로 자동 전환 시도
-            const allCatBoards = await apiGetAllBoards();
-            if (allCatBoards && allCatBoards.length > 0) {
-                board = allCatBoards[0];
+            // 요청한 currentBoardId가 DB에 없는 경우, 어류 보드 전체 목록 중 첫 번째 보드로 자동 전환 시도
+            const allBoards = await apiGetAllBoards();
+            if (allBoards && allBoards.length > 0) {
+                board = allBoards[0];
                 currentBoardId = board.id;
                 localStorage.setItem("current_board_id", currentBoardId);
             }
@@ -1402,12 +1406,12 @@ async function refreshApp() {
             if (welcomeCreateCard) welcomeCreateCard.classList.add("hidden");
             if (welcomeInputBoardId) welcomeInputBoardId.value = "";
             
-            // 설정 폼에 현재 보드 ID 자동 완성 및 테스트값 미리 채우기
-            if (currentBoardId === "DEFAULT" || currentBoardId.startsWith("TEST-")) {
-                setupBoardId.value = currentBoardId === "DEFAULT" ? "TEST-COSMIC-BOARD" : currentBoardId;
-                setupTitle.value = "TEST";
+            // 설정 폼에 현재 보드 ID 자동 완성 및 기본값 미리 채우기
+            if (currentBoardId === "DEFAULT" || currentBoardId.startsWith("TEST-") || currentBoardId.startsWith("CAT-") || currentBoardId === "1") {
+                setupBoardId.value = "FISH-BOARD";
+                setupTitle.value = "수산시장 칭찬나라 🐟";
                 setupTargetCount.value = "30";
-                setupReward.value = "맛있는 디저트 데이트! 🍦";
+                setupReward.value = "싱싱한 모둠회 & 매운탕 파티! 🐟";
                 setupPin.value = "1234";
             } else {
                 setupBoardId.value = currentBoardId;
@@ -1997,8 +2001,8 @@ btnMemoSubmit.addEventListener("click", async () => {
 
     const success = await apiAddSticker(currentBoardId, memoTargetIndex, formattedMemo);
     if (success) {
-        const pawName = CAT_PAWS[selectedStickerType] ? CAT_PAWS[selectedStickerType].name : "고양이 젤리";
-        showToast(`${memoTargetIndex + 1}번째 칸에 ${pawName} 스티커 부착 완료! 🐾💖`);
+        const stickerName = STICKER_ITEMS[selectedStickerType] ? STICKER_ITEMS[selectedStickerType].name : "어류 스티커";
+        showToast(`${memoTargetIndex + 1}번째 칸에 ${stickerName} 스티커 부착 완료! 🐟🌊`);
         memoTargetIndex = null;
         await refreshApp();
     } else {
@@ -2419,13 +2423,13 @@ document.addEventListener("DOMContentLoaded", () => {
         btnWelcomeShowCreate.addEventListener("click", async () => {
             loadingSpinner.classList.remove("hidden");
 
-            // 고유한 순차 코드 생성 (예: CAT-BOARD_1)
+            // 고유한 순차 코드 생성 (예: FISH-BOARD_1)
             const finalCode = await getNextSequentialBoardCode();
 
             setupBoardId.value = finalCode;
-            setupTitle.value = "고양이 칭찬판 💖";
+            setupTitle.value = "수산시장 칭찬나라 🐟";
             setupTargetCount.value = "30";
-            setupReward.value = "맛있는 디저트 데이트! 🍦";
+            setupReward.value = "싱싱한 모둠회 & 매운탕 파티! 🐟";
             setupPin.value = "1234";
 
             if (welcomeConnectCard) welcomeConnectCard.classList.add("hidden");
