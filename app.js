@@ -25,20 +25,24 @@ if (!isLocalMode) {
     console.log("Supabase 설정이 비어있어 '로컬 모드(기기 브라우저 저장)'로 구동됩니다.");
 }
 
-// 수산시장 칭찬스티커 전용 보드 판별 (타 앱 보드 및 테스트 보드 자동 100% 격리)
+// 수산시장 칭찬스티커 전용 보드 판별 (타 앱 보드 및 테스트 보드 자동 100% 격리 - 프라이버시 엄격 보호)
 function isFishBoard(b) {
     if (!b) return false;
     const idStr = String(typeof b === 'string' ? b : (b.id || "")).toUpperCase();
     const titleStr = String(typeof b === 'object' && b.title ? b.title : "").toUpperCase();
     
+    // 수산시장 전용 보드 0427 (양건의 업보스택)은 항상 허용
+    if (idStr === "0427" || titleStr.includes("양건")) return true;
+
     // 1. 테스트 보드 배제 (TEST_BOARD_1, TEST-BOARD-xxx 등)
-    if (idStr.startsWith("TEST-BOARD") || idStr.startsWith("TEST_BOARD") || idStr === "TEST-BOARD" || idStr === "TEST_BOARD") return false;
+    if (idStr.startsWith("TEST-BOARD") || idStr.startsWith("TEST_BOARD") || idStr === "TEST-BOARD" || idStr === "TEST_BOARD" || idStr.startsWith("TEST_")) return false;
+    if (titleStr.includes("테스트")) return false;
     
     // 2. 채소 보드 배제 (CHAEDO_, VEGE_ 등)
-    if (idStr.startsWith("CHAEDO") || idStr.includes("VEGE") || idStr.includes("VEGETABLE") || titleStr.includes("채소") || titleStr.includes("야채") || titleStr.includes("당근")) return false;
+    if (idStr.startsWith("CHAEDO") || idStr.includes("VEGE") || idStr.includes("VEGETABLE") || titleStr.includes("채소") || titleStr.includes("야채") || titleStr.includes("당근") || titleStr.includes("채건")) return false;
     
-    // 3. 달/우주 보드 배제 (TEST-COSMIC-BOARD, BON_WOOK, MOON, COSMIC, LUNAR, STITCH 등)
-    if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("BON_WOOK") || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("MOON") || titleStr.includes("COSMIC") || titleStr.includes("LUNAR") || titleStr.includes("별") || titleStr.includes("스티치") || titleStr.includes("업보")) return false;
+    // 3. 달/우주 보드 배제 (TEST-COSMIC-BOARD, BON_WOOK, MOON, COSMIC, LUNAR, STITCH, 욱이 등)
+    if (idStr === "TEST-COSMIC-BOARD" || idStr.startsWith("BON_WOOK") || idStr.startsWith("MOON") || idStr.includes("COSMIC") || idStr.includes("LUNAR") || idStr.startsWith("TEST-COSMIC") || titleStr.includes("달") || titleStr.includes("우주") || titleStr.includes("MOON") || titleStr.includes("COSMIC") || titleStr.includes("LUNAR") || titleStr.includes("별") || titleStr.includes("스티치") || (titleStr.includes("업보") && !titleStr.includes("양건")) || titleStr.includes("욱이")) return false;
     
     // 4. 고양이 보드 배제 (CAT-BOARD, 1, KITTY, MEOW, 고양이, 욱이 칭찬 스티커판 등)
     if (idStr === "CAT-BOARD" || idStr === "1" || idStr.startsWith("CAT") || idStr.includes("KITTY") || idStr.includes("MEOW") || titleStr.includes("고양이") || titleStr.includes("야옹") || titleStr.includes("욱이 칭찬")) return false;
@@ -1080,7 +1084,7 @@ async function renderBoardList(force = false) {
             }
         });
         
-        const combinedList = Array.from(boardMap.values());
+        const combinedList = Array.from(boardMap.values()).filter(b => isFishBoard(b));
 
         // 1.5 저장된 사용자 지정 보드 순서 적용
         const orderList = getBoardOrder() || [];
@@ -2268,13 +2272,30 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("board_DEFAULT");
     localStorage.removeItem("stickers_DEFAULT");
 
-    // [소독 패치] 무효한 데이터 정리 및 유효한 보드 보존
+    // [소독 패치] 로컬스토리지 내 타 폴더 및 테스트 칭찬판 찌꺼기 100% 완전 정제 (프라이버시 보호)
     try {
         const boards = JSON.parse(localStorage.getItem("registered_boards") || "[]");
-        if (boards.length > 0) {
-            const cleaned = boards.filter(b => b && b.id && typeof b.id === "string");
-            if (cleaned.length !== boards.length) {
-                localStorage.setItem("registered_boards", JSON.stringify(cleaned));
+        const cleaned = boards.filter(b => isFishBoard(b));
+        localStorage.setItem("registered_boards", JSON.stringify(cleaned));
+
+        let curId = localStorage.getItem("current_board_id");
+        if (!curId || !isFishBoard(curId)) {
+            const fallbackId = (cleaned.length > 0) ? cleaned[0].id : "FISH-BOARD";
+            localStorage.setItem("current_board_id", fallbackId);
+            currentBoardId = fallbackId;
+        }
+
+        const order = JSON.parse(localStorage.getItem("board_order") || "[]");
+        const cleanedOrder = order.filter(id => isFishBoard(id));
+        localStorage.setItem("board_order", JSON.stringify(cleanedOrder));
+
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+            const k = localStorage.key(i);
+            if (k && (k.startsWith("board_") || k.startsWith("stickers_"))) {
+                const subId = k.replace("board_", "").replace("stickers_", "");
+                if (!isFishBoard(subId)) {
+                    localStorage.removeItem(k);
+                }
             }
         }
     } catch (e) {
